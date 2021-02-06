@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import useS from "@hooks/usePersistedState";
+import "./App.css";
 
 export default function App() {
   // Create the count state.
@@ -11,7 +11,7 @@ export default function App() {
   }, [count, setCount]);
 
   return (
-    <div>
+    <div className="app">
       <h1>Hi From App! and I've updated</h1>
       <p>
         Count: <code>{count}</code>
