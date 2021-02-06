@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+      "baseUrl": "src",
+      "paths": {
+          "@components/*": ["./components/*"],
+          "@hooks/*": ["./hooks/*"]
+      },
+      "jsx": "preserve",
+      "allowSyntheticDefaultImports": true,
+      "strict": false,
+      "moduleResolution": "node",
+      "lib": ["esnext", "dom"],
+      "module": "esnext",
+      "target": "esnext",
+      "skipLibCheck": true,
+  }
+}
