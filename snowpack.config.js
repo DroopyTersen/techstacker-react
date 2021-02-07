@@ -8,9 +8,21 @@ module.exports = {
     public: "/",
     src: "/dist",
   },
+  routes: [
+    {
+      match: "routes",
+      src: ".*",
+      dest: "/index.html",
+    },
+  ],
   plugins: ["@snowpack/plugin-react-refresh", "@snowpack/plugin-postcss"],
+  optimize: {
+    bundle: true,
+    minify: true,
+    target: "es2018",
+  },
   alias: {
-    "@components": "./components",
+    "@components": "./src/components",
     "@hooks": "./src/hooks",
   },
   packageOptions: {

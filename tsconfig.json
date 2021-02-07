@@ -1,9 +1,8 @@
 {
     "compilerOptions": {
-      "baseUrl": "src",
       "paths": {
-          "@components/*": ["./components/*"],
-          "@hooks/*": ["./hooks/*"]
+          "@components/*": ["./src/components/*"],
+          "@hooks/*": ["./src/hooks/*"]
       },
       "jsx": "preserve",
       "allowSyntheticDefaultImports": true,
