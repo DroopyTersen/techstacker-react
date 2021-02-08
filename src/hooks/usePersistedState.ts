@@ -8,8 +8,8 @@ export default function usePersistedState<T>(
   let [value, setValue] = useState<T>(() => {
     try {
       let cachedValue = storage.getItem(key);
+      console.log("🚀 | cachedValue", cachedValue);
       if (!cachedValue) return defaultValue;
-      if (typeof cachedValue === "string") return cachedValue;
       return JSON.parse(cachedValue);
     } catch (err) {
       return defaultValue;
@@ -21,5 +21,5 @@ export default function usePersistedState<T>(
     storage.setItem(key, valueStr);
   }, [key, value]);
 
-  return [value, setValue];
+  return [value, setValue] as [T, React.Dispatch<React.SetStateAction<T>>];
 }

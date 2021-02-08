@@ -22,6 +22,7 @@ const SELECT_FRAGMENT = `
     created_at
     updated_at
 `;
+
 export const INSERT = `mutation InsertTech($input:technologies_insert_input!) {
     technology:insert_technology(object: $input ) {
       ${SELECT_FRAGMENT}
@@ -39,5 +40,11 @@ export const UPDATE = `mutation UpdateTech($input: technologies_set_input!, $id:
 export const DELETE = `mutation DeleteTech($id:Int!) {
   delete_technology(id:$id) {
     id
+  }
+}`;
+
+export const QUERY_TECH = `query GetTech {
+  technologies(order_by: {created_at: desc}) {
+    ${SELECT_FRAGMENT}
   }
 }`;

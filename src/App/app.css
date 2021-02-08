@@ -24,4 +24,7 @@ html * {
   .text-gray {
     color: #78797a !important;
   }
+  .card-footer {
+    margin-top: auto !important;
+  }
 }
