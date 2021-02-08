@@ -1,0 +1,10 @@
+form {
+  .form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    button {
+      min-width: 100px;
+    }
+  }
+}

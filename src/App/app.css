@@ -1,0 +1,27 @@
+html * {
+  box-sizing: border-box;
+  position: relative;
+}
+:root {
+  --gutter: 20px;
+}
+#root {
+  header {
+    padding: var(--gutter);
+    .navbar-section {
+      align-items: flex-end;
+    }
+    nav a {
+      padding: 10px 10px;
+      &:first-child {
+        padding: 10px 10px 10px 0;
+      }
+    }
+  }
+  main {
+    padding: 0 var(--gutter);
+  }
+  .text-gray {
+    color: #78797a !important;
+  }
+}

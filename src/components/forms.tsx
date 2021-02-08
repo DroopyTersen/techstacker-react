@@ -1,4 +1,5 @@
 import React from "react";
+import "./forms.css";
 
 interface FormControlProps {
   label: string;
