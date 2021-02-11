@@ -15,9 +15,14 @@ function Header(props: HeaderProps) {
           STACKS
         </Link>
       </nav>
-      <section>
+      <section className="navbar-center">
         <div className="input-group input-inline">
-          <input className="form-input" type="text" placeholder="search" />
+          <input
+            className="form-input"
+            type="text"
+            placeholder="search"
+            style={{ width: "300px", maxWidth: "100%" }}
+          />
           <button className="btn btn-primary input-group-btn">
             <i className="icon icon-search"></i>
           </button>

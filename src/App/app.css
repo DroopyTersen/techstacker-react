@@ -13,7 +13,7 @@ body {
   header {
     padding: var(--gutter);
     .navbar-section {
-      align-items: flex-end;
+      align-items: flex-start;
     }
     nav a {
       padding: 10px 10px;

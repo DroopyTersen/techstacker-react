@@ -13,7 +13,7 @@ export default function TechDetails({ tech }: Props) {
         <img
           src={tech.logo}
           className="img-responsive img-fit-cover"
-          style={{ height: "55vh", width: "100%" }}
+          style={{ height: "min(55vh, 50vw)", width: "100%" }}
         ></img>
       )}
       <h1 style={{ marginTop: "30px" }}>{tech.title}</h1>
