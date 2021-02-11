@@ -4,7 +4,6 @@ const SELECT_FRAGMENT = `
     tagline
     link
     logo
-    description
     layer_id
     layer {
         id
@@ -46,5 +45,11 @@ export const DELETE = `mutation DeleteTech($id:Int!) {
 export const QUERY_TECH = `query GetTech {
   technologies(order_by: {created_at: desc}) {
     ${SELECT_FRAGMENT}
+  }
+}`;
+export const QUERY_TECH_BY_ID = `query GetTechById($id:Int!) {
+  technology(id:$id) {
+    ${SELECT_FRAGMENT}
+    description
   }
 }`;

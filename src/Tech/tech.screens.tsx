@@ -1,12 +1,13 @@
-import { MotionGrid } from "@components/Grid";
-import usePersistedState from "@hooks/usePersistedState";
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import useGraphQL from "../common/gql";
-import TechCard from "./components/TechCard";
+import { ErrorCard } from "@components/errors";
+import { GraphQL } from "@components/GraphQL";
+
+import React, { ReactNode, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
+import TechDetails from "./components/TechDetails";
 import TechForm from "./components/TechForm";
-import { Tech } from "./tech.data";
-import { QUERY_TECH } from "./tech.gql";
+import TechGrid from "./components/TechGrid";
+import { QUERY_TECH, QUERY_TECH_BY_ID } from "./tech.gql";
 
 export const NewTechScreen = () => {
   let navigate = useNavigate();
@@ -22,26 +23,21 @@ export const NewTechScreen = () => {
 };
 
 export const TechScreen = () => {
-  let [{ data }] = useGraphQL(QUERY_TECH);
-  let [technologies, setTechnologies] = usePersistedState<Tech[]>("cached-tech", []);
-  console.log("🚀 | TechScreen | technologies", technologies);
-
-  useEffect(() => {
-    if (data?.technologies) {
-      setTechnologies(data.technologies);
-    }
-  }, [data?.technologies]);
-
   return (
     <div className="screen all-tech">
       <h1>All Tech</h1>
-      <MotionGrid width="350px" gap="20px">
-        {technologies.map((tech) => (
-          <MotionGrid.Item key={tech.id}>
-            <TechCard tech={tech} imageSize="200px" />
-          </MotionGrid.Item>
-        ))}
-      </MotionGrid>
+      <GraphQL query={QUERY_TECH} cacheKey="cached-tech">
+        {({ data }) => <TechGrid technologies={data?.technologies} />}
+      </GraphQL>
     </div>
+  );
+};
+
+export const TechDetailsScreen = () => {
+  let { techId } = useParams();
+  return (
+    <GraphQL query={QUERY_TECH_BY_ID} variables={{ id: parseInt(techId) }}>
+      {({ data }) => <TechDetails tech={data?.technology} />}
+    </GraphQL>
   );
 };

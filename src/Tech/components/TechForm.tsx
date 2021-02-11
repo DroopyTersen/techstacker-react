@@ -6,6 +6,7 @@ import { useAppData } from "../../App/AppDataProvider";
 import { saveTech, Tech } from "../tech.data";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
+import TechCard from "./TechCard";
 
 export interface TechFormProps {
   techId: number;
@@ -38,9 +39,7 @@ export default function TechForm({ onSuccess, onCancel }) {
   console.log("🚀 | TechForm | chosenCategory", chosenCategory, formValues);
   return (
     <form {...formProps}>
-      <div
-        style={{ maxWidth: "1200px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}
-      >
+      <div className="layout two-column-even">
         <div>
           <fieldset disabled={isSaving}>
             <Input id="title" label="Title" required onBlur={onBlur} />
@@ -105,36 +104,7 @@ export default function TechForm({ onSuccess, onCancel }) {
           </fieldset>
         </div>
         <div>
-          <div className="card">
-            {formValues.logo && (
-              <div className="card-image">
-                <img className="img-responsive mb-2" src={formValues.logo} />
-              </div>
-            )}
-            <div className="card-header">
-              <div className="card-title h3">{formValues.title || "New Tech"}</div>
-              <div className="card-subtitle text-gray">{formValues.tagline}</div>
-            </div>
-            <div className="card-footer">
-              {chosenLayer && (
-                <Link className="btn btn-primary mr-2" to={"/categories/" + chosenLayer.id}>
-                  {chosenLayer.title}
-                </Link>
-              )}
-              {chosenCategory && (
-                <Link className="btn btn-primary" to={"/categories/" + chosenCategory.id}>
-                  {chosenCategory.title}
-                </Link>
-              )}
-              {formValues.link && (
-                <div className="mt-2 text-ellipsis">
-                  <a target="_blank" href={formValues.link}>
-                    {formValues.link}
-                  </a>
-                </div>
-              )}
-            </div>
-          </div>
+          <TechCard tech={formValues} />
           {formValues.description && (
             <div className="card mt-2">
               <div className="card-header pt-2">

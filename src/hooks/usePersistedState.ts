@@ -7,8 +7,9 @@ export default function usePersistedState<T>(
 ) {
   let [value, setValue] = useState<T>(() => {
     try {
+      if (!key) return defaultValue;
+
       let cachedValue = storage.getItem(key);
-      console.log("🚀 | cachedValue", cachedValue);
       if (!cachedValue) return defaultValue;
       return JSON.parse(cachedValue);
     } catch (err) {
@@ -17,8 +18,10 @@ export default function usePersistedState<T>(
   });
 
   useEffect(() => {
-    let valueStr = typeof value === "string" ? value : JSON.stringify(value);
-    storage.setItem(key, valueStr);
+    if (key) {
+      let valueStr = typeof value === "string" ? value : JSON.stringify(value);
+      storage.setItem(key, valueStr);
+    }
   }, [key, value]);
 
   return [value, setValue] as [T, React.Dispatch<React.SetStateAction<T>>];

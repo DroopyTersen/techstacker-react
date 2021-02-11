@@ -5,6 +5,10 @@ html * {
 :root {
   --gutter: 20px;
 }
+body {
+  max-width: 1200px;
+  margin: 0 auto;
+}
 #root {
   header {
     padding: var(--gutter);
@@ -27,4 +31,16 @@ html * {
   .card-footer {
     margin-top: auto !important;
   }
+}
+p {
+  max-width: 80ch;
+}
+.layout {
+  max-width: 1240px;
+  display: grid;
+  gap: 20px;
+  box-sizing: border-box;
+}
+.two-column-even {
+  grid-template-columns: repeat(auto-fill, minmax(100px, 600px));
 }

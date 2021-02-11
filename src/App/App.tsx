@@ -14,11 +14,21 @@ export default function App() {
         <main>
           <AnimatePresence>
             <Routes>
-              <AnimatedRoute path="*" element={<h1>Home</h1>} key="home"></AnimatedRoute>
+              {/* <AnimatedRoute path="*" element={<h1>Home</h1>} key="home"></AnimatedRoute> */}
+              <AnimatedRoute
+                path="*"
+                element={<TechScreens.TechScreen />}
+                key="home"
+              ></AnimatedRoute>
               <AnimatedRoute
                 path="/tech"
                 element={<TechScreens.TechScreen />}
                 key="/tech"
+              ></AnimatedRoute>
+              <AnimatedRoute
+                path="/tech/:techId"
+                element={<TechScreens.TechDetailsScreen />}
+                key="/tech/techId"
               ></AnimatedRoute>
               <AnimatedRoute
                 path="/tech/new"

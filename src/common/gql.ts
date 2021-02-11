@@ -20,7 +20,7 @@ function createGraphQLClient(endpoint, headers = {}) {
 }
 
 export default function useGraphQL(query, variables = undefined) {
-  let { data: result, isLoading } = useAsyncData(gqlClient.request, [query], {
+  let { data: result, isLoading } = useAsyncData(gqlClient.request, [query, variables], {
     data: null,
   });
   return [
