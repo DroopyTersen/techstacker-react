@@ -5,7 +5,7 @@ export function Row({
   gap = "20px",
   justifyContent = "flex-start",
   alignItems = "center",
-  className,
+  className = "",
 }) {
   return (
     <div

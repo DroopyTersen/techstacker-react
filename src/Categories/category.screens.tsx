@@ -1,8 +1,9 @@
 import { GraphQL } from "@components/GraphQL";
 import { MotionGrid } from "@components/Grid";
+import { Row } from "@components/layout";
 
 import React, { useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useAppData, useCategories } from "../App/AppDataProvider";
 import TechGrid from "../Tech/components/TechGrid";
 import { QUERY_FILTERED_TECH } from "../Tech/tech.gql";
@@ -20,7 +21,13 @@ export const CategoryDetailsScreen = () => {
   }, [categoryId]);
   return (
     <>
-      <h1>{category?.title}</h1>
+      <Row alignItems="flex-start" justifyContent="space-between">
+        <h1>{category?.title}</h1>
+        <Link to={"/tech/new?categoryId=" + categoryId} className="btn btn-primary">
+          NEW TECH
+          <i className="icon icon-plus ml-2"></i>
+        </Link>
+      </Row>
       <GraphQL query={QUERY_FILTERED_TECH} variables={memoizedVars}>
         {({ data }) => <TechGrid technologies={data?.technologies} />}
       </GraphQL>

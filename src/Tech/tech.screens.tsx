@@ -1,7 +1,8 @@
 import { GraphQL } from "@components/GraphQL";
+import { Row } from "@components/layout";
 
 import React, { ReactNode, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import TechDetails from "./components/TechDetails";
 import TechForm from "./components/TechForm";
@@ -24,7 +25,13 @@ export const NewTechScreen = () => {
 export const TechScreen = () => {
   return (
     <div className="screen all-tech">
-      <h1>All Tech</h1>
+      <Row alignItems="flex-start" justifyContent="space-between">
+        <h1>Recent Tech</h1>
+        <Link to="/tech/new" className="btn btn-primary">
+          NEW TECH
+          <i className="icon icon-plus ml-2"></i>
+        </Link>
+      </Row>
       <GraphQL query={QUERY_RECENT_TECH} cacheKey="cached-tech">
         {({ data }) => <TechGrid technologies={data?.technologies} />}
       </GraphQL>

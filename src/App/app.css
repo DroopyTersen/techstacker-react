@@ -54,4 +54,10 @@ textarea {
   .hide-mobile {
     display: none !important;
   }
+  .navbar .navbar-center {
+    flex: 1 0 auto;
+    .input-inline {
+      width: 100%;
+    }
+  }
 }

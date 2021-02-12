@@ -18,7 +18,7 @@ function reducer<T>(state: AsyncDataState<T>, action: any) {
       return {
         ...state,
         isLoading: true,
-        data: action.data || state.data || null,
+        data: state.data || action.data || null,
         error: "",
       };
     case "success":

@@ -20,7 +20,13 @@ export default function App() {
               {/* <AnimatedRoute path="*" element={<h1>Home</h1>} key="home"></AnimatedRoute> */}
               <AnimatedRoute
                 path="*"
-                element={<TechScreens.TechScreen />}
+                element={
+                  <>
+                    <LayerScreens.LayersScreen />
+                    <div style={{ margin: "80px 0" }} />
+                    <TechScreens.TechScreen />
+                  </>
+                }
                 key="home"
               ></AnimatedRoute>
               <AnimatedRoute
@@ -44,6 +50,11 @@ export default function App() {
                 key="/tech/:techId/edit"
               ></AnimatedRoute>
 
+              <AnimatedRoute
+                path="/layers"
+                element={<LayerScreens.LayersScreen />}
+                key="/layers"
+              ></AnimatedRoute>
               <AnimatedRoute
                 path="/layers/:layerId"
                 element={<LayerScreens.LayerDetailsScreen />}

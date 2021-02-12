@@ -10,12 +10,6 @@ function Header(props: HeaderProps) {
         <Link to="/" className="text-bold mr-2 text-large">
           TechStacker
         </Link>
-        <Link to="/categories" className="mr-2">
-          Categories
-        </Link>
-        <Link to="/tech" className="mr-2">
-          STACKS
-        </Link>
       </nav>
       <section className="navbar-center">
         <div className="input-group input-inline">
@@ -31,11 +25,20 @@ function Header(props: HeaderProps) {
           </button>
         </div>
       </section>
-      <section className="navbar-section">
-        <Link to="/tech/new" className="btn">
-          +Tech
+      <nav className="navbar-section">
+        <Link to="/stacks" className="ml-2">
+          TECH
         </Link>
-      </section>
+        <Link to="/stacks" className="ml-2">
+          STACKS
+        </Link>
+        <Link to="/layers" className="ml-2">
+          LAYERS
+        </Link>
+        <Link to="/categories" className="ml-2">
+          CATEGORIES
+        </Link>
+      </nav>
     </header>
   );
 }
