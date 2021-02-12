@@ -10,10 +10,7 @@ export function GraphQL({
   cacheKey = "",
   fallback,
 }: GraphQLProps) {
-  let memoizedVariables = useMemo(() => {
-    return variables;
-  }, [Object.values(variables).join(""), Object.keys(variables).join("")]);
-  let [{ data, errors }] = useGraphQL(query, memoizedVariables);
+  let [{ data, errors }] = useGraphQL(query, variables);
   let [cachedData, setCachedData] = usePersistedState(cacheKey, null, sessionStorage);
 
   useEffect(() => {

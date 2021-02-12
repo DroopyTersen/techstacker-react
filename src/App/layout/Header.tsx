@@ -10,8 +10,8 @@ function Header(props: HeaderProps) {
         <Link to="/" className="text-bold mr-2 text-large">
           TechStacker
         </Link>
-        <Link to="/tech" className="mr-2">
-          TECH
+        <Link to="/categories" className="mr-2">
+          Categories
         </Link>
         <Link to="/tech" className="mr-2">
           STACKS

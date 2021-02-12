@@ -7,7 +7,7 @@ html * {
 }
 body {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto 40px;
 }
 #root {
   header {
@@ -34,6 +34,9 @@ body {
 }
 p {
   max-width: 80ch;
+}
+a:hover img {
+  filter: brightness(120%);
 }
 textarea {
   resize: vertical;

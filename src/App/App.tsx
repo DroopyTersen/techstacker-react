@@ -51,6 +51,11 @@ export default function App() {
               ></AnimatedRoute>
 
               <AnimatedRoute
+                path="/categories"
+                element={<CategoryScreens.CategoriesScreen />}
+                key="/categories"
+              ></AnimatedRoute>
+              <AnimatedRoute
                 path="/categories/:categoryId"
                 element={<CategoryScreens.CategoryDetailsScreen />}
                 key="/categories/:categoryId"
