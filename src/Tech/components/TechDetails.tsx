@@ -18,7 +18,7 @@ export default function TechDetails({ tech }: Props) {
       )}
       <div className="p-relative" style={{ marginBottom: "40px" }}>
         <h1 style={{ marginTop: "30px" }}>{tech.title}</h1>
-        <div style={{ position: "absolute", right: "0", bottom: "0" }}>
+        <div style={{ position: "absolute", right: "0", bottom: "0", zIndex: 2 }}>
           <Link to={`/tech/${tech.id}/edit`} className="btn">
             EDIT
             <i className="icon icon-edit ml-2"></i>
