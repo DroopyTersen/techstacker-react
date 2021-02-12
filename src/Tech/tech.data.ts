@@ -24,6 +24,9 @@ export const saveTech = async (tech: TechDto): Promise<Tech> => {
   }
   try {
     let { id, ...input } = tech;
+    if (!input.category_id) {
+      input.category_id = null;
+    }
     let { data, errors } = id
       ? await gqlClient.request(gql.UPDATE, { input, id })
       : await gqlClient.request(gql.INSERT, { input });

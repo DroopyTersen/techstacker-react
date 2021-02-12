@@ -7,19 +7,22 @@ import { saveTech, Tech } from "../tech.data";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
 import TechCard from "./TechCard";
+import { TwoColumn } from "@components/layout";
 
 export interface TechFormProps {
-  techId: number;
+  initial?: Tech;
   onSuccess: (tech: Tech) => void;
   onCancel: () => void;
 }
 
-export default function TechForm({ onSuccess, onCancel }) {
+export default function TechForm({ onSuccess, onCancel, initial = {} }) {
   let { layers = [], categories = [] } = useAppData();
-  let { formProps, error, isSaving, getValue, updateValue, onBlur, formValues } = useForm({
+  let { formProps, error, isSaving, getValue, updateValue, syncValues, formValues } = useForm({
     onSuccess,
     onSave: saveTech,
+    initial,
   });
+  console.log("🚀 | TechForm", formValues, initial);
   let [link, setLink] = React.useState("");
   let linkPreview = useLinkPreview(link);
   useEffect(() => {
@@ -33,16 +36,24 @@ export default function TechForm({ onSuccess, onCancel }) {
       updateValue("logo", linkPreview.image);
     }
   }, [linkPreview]);
-
   let chosenCategory = categories.find((c) => c.id + "" === formValues.category_id);
   let chosenLayer = layers.find((l) => l.id + "" === formValues.layer_id);
-  console.log("🚀 | TechForm | chosenCategory", chosenCategory, formValues);
   return (
     <form {...formProps}>
-      <div className="layout two-column-even">
-        <div>
+      <div
+        className="form-actions mb-2 p-absolute hide-mobile"
+        style={{ top: "-40px", right: "0" }}
+      >
+        <button className="btn btn-link mr-2" type="button" onClick={() => onCancel()}>
+          CANCEL
+        </button>
+        <button className="btn btn-primary">SAVE</button>
+      </div>
+      <div className="columns">
+        <div className="column col-6 col-md-12">
           <fieldset disabled={isSaving}>
-            <Input id="title" label="Title" required onBlur={onBlur} />
+            <input type="hidden" name="id"></input>
+            <Input id="title" label="Title" required onBlur={syncValues} />
             <TextArea
               id="link"
               label="Link"
@@ -57,7 +68,7 @@ export default function TechForm({ onSuccess, onCancel }) {
                   label="Tech Layer"
                   required
                   hint="Where in the tech stack does it live?"
-                  onChange={onBlur}
+                  onChange={syncValues}
                 >
                   <option value="">Choose...</option>
                   {layers.map((layer) => (
@@ -68,7 +79,12 @@ export default function TechForm({ onSuccess, onCancel }) {
                 </Select>
               </div>
               <div className="column col-6 col-sm-12">
-                <Select id="category_id" label="Category" required onChange={onBlur}>
+                <Select
+                  id="category_id"
+                  label="Category"
+                  onChange={syncValues}
+                  hint="How would you categorize it?"
+                >
                   <option value="">Choose...</option>
                   {categories.map((item) => (
                     <option key={item.id} value={item.id}>
@@ -84,15 +100,21 @@ export default function TechForm({ onSuccess, onCancel }) {
               label="Tagline"
               rows={2}
               hint="How does it describe itself?"
-              onBlur={onBlur}
+              onBlur={syncValues}
             />
-            <TextArea id="logo" label="Logo" rows={2} hint="A url to an image." onBlur={onBlur} />
+            <TextArea
+              id="logo"
+              label="Logo"
+              rows={2}
+              hint="A url to an image."
+              onBlur={syncValues}
+            />
 
             <TextArea
               id="description"
               label="Description"
               hint="You can write in markdown to format the description."
-              onChange={onBlur}
+              onChange={syncValues}
             />
             {error && <p className="text-error">{error}</p>}
             <div className="form-actions">
@@ -103,8 +125,9 @@ export default function TechForm({ onSuccess, onCancel }) {
             </div>
           </fieldset>
         </div>
-        <div>
-          <TechCard tech={formValues} />
+        <div className="column col-6 col-md-12 hide-mobile">
+          <h5>Preview</h5>
+          <TechCard tech={{ ...formValues, category: chosenCategory, layer: chosenLayer }} />
           {formValues.description && (
             <div className="card mt-2">
               <div className="card-header pt-2">

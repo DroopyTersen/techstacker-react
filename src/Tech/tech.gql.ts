@@ -42,7 +42,7 @@ export const DELETE = `mutation DeleteTech($id:Int!) {
   }
 }`;
 
-export const QUERY_TECH = `query GetTech {
+export const QUERY_RECENT_TECH = `query GetTech {
   technologies(order_by: {created_at: desc}) {
     ${SELECT_FRAGMENT}
   }
@@ -53,3 +53,25 @@ export const QUERY_TECH_BY_ID = `query GetTechById($id:Int!) {
     description
   }
 }`;
+export const QUERY_FILTERED_TECH = `
+query GetFilteredTech($order: [technologies_order_by!], $where: technologies_bool_exp!) {
+  technologies(order_by: $order, where: $where) {
+    ${SELECT_FRAGMENT}
+  }
+}
+`;
+
+export const QUERY_SEARCH_TECH = `
+query SearchTech($search:String!) {
+  technologies(order_by: { title: asc}, where: { title: { _ilike: $search }}) {
+    id
+    title
+  }
+}
+
+`;
+
+// {
+//   "order": { "title": "asc"},
+//   "where": {"category_id": { "_eq": 3}, "title": { "_like": "frame"} }
+// }

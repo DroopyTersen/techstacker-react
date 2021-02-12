@@ -1,4 +1,3 @@
-import { ErrorCard } from "@components/errors";
 import { GraphQL } from "@components/GraphQL";
 
 import React, { ReactNode, useEffect } from "react";
@@ -7,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import TechDetails from "./components/TechDetails";
 import TechForm from "./components/TechForm";
 import TechGrid from "./components/TechGrid";
-import { QUERY_TECH, QUERY_TECH_BY_ID } from "./tech.gql";
+import { QUERY_RECENT_TECH, QUERY_TECH_BY_ID } from "./tech.gql";
 
 export const NewTechScreen = () => {
   let navigate = useNavigate();
@@ -26,7 +25,7 @@ export const TechScreen = () => {
   return (
     <div className="screen all-tech">
       <h1>All Tech</h1>
-      <GraphQL query={QUERY_TECH} cacheKey="cached-tech">
+      <GraphQL query={QUERY_RECENT_TECH} cacheKey="cached-tech">
         {({ data }) => <TechGrid technologies={data?.technologies} />}
       </GraphQL>
     </div>
@@ -39,5 +38,24 @@ export const TechDetailsScreen = () => {
     <GraphQL query={QUERY_TECH_BY_ID} variables={{ id: parseInt(techId) }}>
       {({ data }) => <TechDetails tech={data?.technology} />}
     </GraphQL>
+  );
+};
+
+export const EditTechScreen = () => {
+  let navigate = useNavigate();
+  let { techId } = useParams();
+  return (
+    <>
+      <h1>Edit Tech</h1>
+      <GraphQL query={QUERY_TECH_BY_ID} variables={{ id: parseInt(techId) }}>
+        {({ data }) => (
+          <TechForm
+            initial={data?.technology}
+            onCancel={() => history.back()}
+            onSuccess={(result) => navigate("/tech/" + result.id)}
+          />
+        )}
+      </GraphQL>
+    </>
   );
 };

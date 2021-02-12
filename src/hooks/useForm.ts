@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 export const getFormValues = (form) => {
   let formData = new FormData(form);
@@ -29,15 +29,30 @@ export default function useForm({ onSave, onSuccess, initial = {} }) {
     }
   };
 
-  let updateValue = (key, value) => {
+  let updateValue = (key, value, syncState = true) => {
     if (formRef.current) {
       let input = formRef.current.querySelector(`[name='${key}']`);
       if (input) {
         input.value = value;
       }
-      syncValues();
+      if (syncState) {
+        syncValues();
+      }
     }
   };
+
+  let setValues = (updates) => {
+    Object.keys(updates).forEach((key) => {
+      updateValue(key, updates[key], false);
+    });
+    syncValues();
+  };
+
+  useEffect(() => {
+    if (initial) {
+      setValues(initial);
+    }
+  }, []);
 
   let syncValues = () => {
     if (formRef.current) {
@@ -62,7 +77,7 @@ export default function useForm({ onSave, onSuccess, initial = {} }) {
     formProps,
     updateValue,
     getValue,
-    onBlur: () => syncValues(),
+    syncValues: () => syncValues(),
     formValues,
   };
 }

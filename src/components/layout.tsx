@@ -27,7 +27,17 @@ export function TwoColumn({ children }) {
   return (
     <Row alignItems="flex-start" className="mb-2">
       <div style={{ flex: "0 1 90ch" }}>{children[0]}</div>
-      <div style={{ display: "flex", flexWrap: "wrap" }}>{children[1]}</div>
+      <div>{children[1]}</div>
+    </Row>
+  );
+}
+
+export function TwoColumnEven({ children }) {
+  if (children.length !== 2) throw new Error("YOu must pass 2 children to GreedyTwoColumn");
+  return (
+    <Row alignItems="flex-start" className="mb-2">
+      <div style={{ flex: "1 1 50%" }}>{children[0]}</div>
+      <div style={{ flex: "1 1 50%" }}>{children[1]}</div>
     </Row>
   );
 }

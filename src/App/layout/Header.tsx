@@ -1,7 +1,9 @@
+import { TechAutocomplete } from "@components/AutoComplete";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Header(props: HeaderProps) {
+  let navigate = useNavigate();
   return (
     <header className="navbar">
       <nav className="navbar-section">
@@ -17,12 +19,13 @@ function Header(props: HeaderProps) {
       </nav>
       <section className="navbar-center">
         <div className="input-group input-inline">
-          <input
+          <TechAutocomplete onChange={(techId) => navigate("/tech/" + techId)} />
+          {/* <input
             className="form-input"
             type="text"
             placeholder="search"
             style={{ width: "300px", maxWidth: "100%" }}
-          />
+          /> */}
           <button className="btn btn-primary input-group-btn">
             <i className="icon icon-search"></i>
           </button>

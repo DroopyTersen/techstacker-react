@@ -35,6 +35,9 @@ body {
 p {
   max-width: 80ch;
 }
+textarea {
+  resize: vertical;
+}
 .layout {
   max-width: 1240px;
   display: grid;
@@ -43,4 +46,9 @@ p {
 }
 .two-column-even {
   grid-template-columns: repeat(auto-fill, minmax(100px, 600px));
+}
+@media (max-width: 600px) {
+  .hide-mobile {
+    display: none !important;
+  }
 }

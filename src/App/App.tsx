@@ -2,6 +2,9 @@ import React from "react";
 import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
 import { AppDataProvider } from "./AppDataProvider";
 import * as TechScreens from "../Tech/tech.screens";
+import * as LayerScreens from "../Layers/layers.screens";
+import * as CategoryScreens from "../Categories/category.screens";
+
 import Header from "./layout/Header";
 import { AnimatePresence, motion, AnimateSharedLayout } from "framer-motion";
 import "./app.css";
@@ -34,6 +37,23 @@ export default function App() {
                 path="/tech/new"
                 key="/tech/new"
                 element={<TechScreens.NewTechScreen />}
+              ></AnimatedRoute>
+              <AnimatedRoute
+                path="/tech/:techId/edit"
+                element={<TechScreens.EditTechScreen />}
+                key="/tech/:techId/edit"
+              ></AnimatedRoute>
+
+              <AnimatedRoute
+                path="/layers/:layerId"
+                element={<LayerScreens.LayerDetailsScreen />}
+                key="/layers/:layerId"
+              ></AnimatedRoute>
+
+              <AnimatedRoute
+                path="/categories/:categoryId"
+                element={<CategoryScreens.CategoryDetailsScreen />}
+                key="/categories/:categoryId"
               ></AnimatedRoute>
             </Routes>
           </AnimatePresence>

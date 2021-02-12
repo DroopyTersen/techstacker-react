@@ -10,7 +10,6 @@ export function GraphQL({
   cacheKey = "",
   fallback,
 }: GraphQLProps) {
-  console.log("🚀 | GraphQL | variables", variables);
   let memoizedVariables = useMemo(() => {
     return variables;
   }, [Object.values(variables).join(""), Object.keys(variables).join("")]);
