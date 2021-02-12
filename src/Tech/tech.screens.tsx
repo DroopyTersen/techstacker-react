@@ -1,7 +1,7 @@
 import { GraphQL } from "@components/GraphQL";
 import { Row } from "@components/layout";
 
-import React, { ReactNode, useEffect } from "react";
+import React from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import TechDetails from "./components/TechDetails";
