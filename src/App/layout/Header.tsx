@@ -26,7 +26,7 @@ function Header(props: HeaderProps) {
         </div>
       </section>
       <nav className="navbar-section">
-        <Link to="/stacks" className="ml-2">
+        <Link to="/tech" className="ml-2">
           TECH
         </Link>
         <Link to="/stacks" className="ml-2">

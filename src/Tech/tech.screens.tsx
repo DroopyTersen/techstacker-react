@@ -2,7 +2,7 @@ import { GraphQL } from "@components/GraphQL";
 import { Row } from "@components/layout";
 
 import React, { ReactNode, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import TechDetails from "./components/TechDetails";
 import TechForm from "./components/TechForm";
@@ -11,10 +11,17 @@ import { QUERY_RECENT_TECH, QUERY_TECH_BY_ID } from "./tech.gql";
 
 export const NewTechScreen = () => {
   let navigate = useNavigate();
+  let queryParams = new URLSearchParams(useLocation().search);
+  let initial = {
+    category_id: queryParams.get("categoryId"),
+    layer_id: queryParams.get("layerId"),
+  };
+
   return (
     <div className="screen new-tech">
       <h1>New Tech</h1>
       <TechForm
+        initial={initial}
         onCancel={() => history.back()}
         onSuccess={(result) => navigate("/tech/" + result.id)}
       />
