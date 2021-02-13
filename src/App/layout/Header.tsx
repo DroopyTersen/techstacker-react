@@ -1,4 +1,4 @@
-import { TechAutocomplete } from "@components/AutoComplete";
+import { SearchAutocomplete } from "@components/AutoComplete";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -13,7 +13,7 @@ function Header(props: HeaderProps) {
       </nav>
       <section className="navbar-center">
         <div className="input-group input-inline">
-          <TechAutocomplete onChange={(techId) => navigate("/tech/" + techId)} />
+          <SearchAutocomplete onChange={(techId) => navigate("/tech/" + techId)} />
           {/* <input
             className="form-input"
             type="text"

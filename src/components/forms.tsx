@@ -19,13 +19,6 @@ export const FormControl = ({ children, label, id, hint }: FormControlProps) => 
   );
 };
 
-export interface TextFieldProps extends React.HTMLProps<HTMLInputElement> {
-  label: string;
-  id: string;
-  isMultiline?: boolean;
-  [key: string]: any;
-}
-
 type InputProps = FormControlProps & React.HTMLProps<HTMLInputElement>;
 export const Input = ({ label, id, hint, ...rest }: InputProps) => {
   return (

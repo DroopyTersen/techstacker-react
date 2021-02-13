@@ -41,4 +41,5 @@ export interface CardProps {
   imageSize?: string;
   [key: string]: any;
   children?: React.ReactNode;
+  badgeCount?: number;
 }

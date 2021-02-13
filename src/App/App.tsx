@@ -4,6 +4,7 @@ import { AppDataProvider } from "./AppDataProvider";
 import * as TechScreens from "../Tech/tech.screens";
 import * as LayerScreens from "../Layers/layers.screens";
 import * as CategoryScreens from "../Categories/category.screens";
+import * as StackScreens from "../Stacks/stack.screens";
 
 import Header from "./layout/Header";
 import { AnimatePresence, motion, AnimateSharedLayout } from "framer-motion";
@@ -48,6 +49,12 @@ export default function App() {
                 path="/tech/:techId/edit"
                 element={<TechScreens.EditTechScreen />}
                 key="/tech/:techId/edit"
+              ></AnimatedRoute>
+
+              <AnimatedRoute
+                path="/stacks/new"
+                key="/stacks/new"
+                element={<StackScreens.NewStackScreen />}
               ></AnimatedRoute>
 
               <AnimatedRoute

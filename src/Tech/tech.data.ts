@@ -1,4 +1,5 @@
 import { Category, Layer } from "../App/AppDataProvider";
+import { cachify } from "../common/cache";
 import { gqlClient } from "../common/gql";
 import * as gql from "./tech.gql";
 
@@ -43,3 +44,15 @@ export const saveTech = async (tech: TechDto): Promise<Tech> => {
     throw new Error("Unable to save Tech item");
   }
 };
+
+export const searchTech = cachify(
+  async (search: string): Promise<Tech[]> => {
+    if (!search) return [];
+    let { data } = await gqlClient.request(gql.QUERY_SEARCH_TECH, {
+      search: `%${search}%`,
+    });
+
+    return data?.technologies ?? [];
+  },
+  { getCacheKey: (search) => `search-tech:${search}`, duration: 1000 * 60 }
+);
