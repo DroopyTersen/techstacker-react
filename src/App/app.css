@@ -50,6 +50,15 @@ textarea {
 .two-column-even {
   grid-template-columns: repeat(auto-fill, minmax(100px, 600px));
 }
+.label.label-rounded {
+  text-align: center;
+}
+.no-select {
+  user-select: none;
+}
+.invisible {
+  opacity: 0;
+}
 @media (max-width: 600px) {
   .hide-mobile {
     display: none !important;

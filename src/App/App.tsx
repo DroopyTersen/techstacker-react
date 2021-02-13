@@ -52,6 +52,11 @@ export default function App() {
               ></AnimatedRoute>
 
               <AnimatedRoute
+                path="/stacks"
+                key="/stacks"
+                element={<StackScreens.StacksScreen />}
+              ></AnimatedRoute>
+              <AnimatedRoute
                 path="/stacks/new"
                 key="/stacks/new"
                 element={<StackScreens.NewStackScreen />}

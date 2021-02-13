@@ -6,6 +6,7 @@ export function Row({
   justifyContent = "flex-start",
   alignItems = "center",
   className = "",
+  margin = "0",
 }) {
   return (
     <div
@@ -16,6 +17,7 @@ export function Row({
         gap,
         alignItems,
         justifyContent,
+        margin,
       }}
     >
       {children}
