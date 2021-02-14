@@ -61,6 +61,11 @@ export default function App() {
                 key="/stacks/new"
                 element={<StackScreens.NewStackScreen />}
               ></AnimatedRoute>
+              <AnimatedRoute
+                path="/stacks/:stackId/edit"
+                key="/stacks/:stackId/edit"
+                element={<StackScreens.EditStackScreen />}
+              ></AnimatedRoute>
 
               <AnimatedRoute
                 path="/layers"

@@ -7,16 +7,10 @@ import { useAppData } from "../../App/AppDataProvider";
 import useGraphQL from "../../common/gql";
 import TechGrid from "../../Tech/components/TechGrid";
 import { Tech } from "../../Tech/tech.data";
+import { saveStack, StackFormValues } from "../stack.data";
 import { QUERY_AVAILABLE_TECH } from "../stacks.gql";
 import TechSelector from "./TechSelector";
 
-interface StackFormValues {
-  id?: number;
-  title?: string;
-  image?: string;
-  description?: string;
-  techIds?: number[];
-}
 interface Props {
   onSuccess: (stack: StackFormValues) => void;
   onCancel: () => void;
@@ -32,8 +26,26 @@ export default function StackForm({ onCancel, onSuccess, initial = {} }: Props) 
   let { layers = [], categories = [] } = useAppData();
   let [{ data }] = useGraphQL(QUERY_AVAILABLE_TECH);
   let technologies: Tech[] = data?.technologies || [];
+  let onSubmit = async (e) => {
+    e.preventDefault();
+    let formValues: StackFormValues = {
+      id: initial.id || undefined,
+      title,
+      description,
+      image,
+      techIds,
+    };
+    try {
+      let stack = await saveStack(formValues);
+      if (stack) {
+        onSuccess(stack);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
-    <form>
+    <form onSubmit={onSubmit}>
       <div
         className="form-actions mb-2 p-absolute hide-mobile"
         style={{ top: "-40px", right: "0" }}
@@ -51,6 +63,7 @@ export default function StackForm({ onCancel, onSuccess, initial = {} }: Props) 
             id="title"
             value={title}
             onChange={(e) => setTitle(e.currentTarget.value)}
+            required
           />
 
           <TextArea

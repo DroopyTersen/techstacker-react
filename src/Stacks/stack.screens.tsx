@@ -1,7 +1,9 @@
+import { GraphQL } from "@components/GraphQL";
 import { Row } from "@components/layout";
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import StackForm from "./components/StackForm";
+import { QUERY_STACK_FOR_EDIT } from "./stacks.gql";
 
 export const NewStackScreen = () => {
   let navigate = useNavigate();
@@ -33,5 +35,27 @@ export const StacksScreen = () => {
         </Link>
       </Row>
     </div>
+  );
+};
+
+export const EditStackScreen = () => {
+  let navigate = useNavigate();
+  let { stackId } = useParams();
+  return (
+    <>
+      <h1>Edit Tech</h1>
+      <GraphQL query={QUERY_STACK_FOR_EDIT} variables={{ id: parseInt(stackId) }}>
+        {({ data }) => (
+          <StackForm
+            initial={{
+              ...data?.stack,
+              techIds: (data?.stack?.technologies || []).map((t) => t.tech_id),
+            }}
+            onCancel={() => history.back()}
+            onSuccess={(result) => navigate("/stacks/" + result.id)}
+          />
+        )}
+      </GraphQL>
+    </>
   );
 };
