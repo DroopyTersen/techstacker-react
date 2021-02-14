@@ -14,7 +14,11 @@ export interface TechFormProps {
   onSuccess: (tech: Tech) => void;
   onCancel: () => void;
 }
-
+const defaultValues: Tech = {
+  title: "New Tech",
+  logo:
+    "https://images.unsplash.com/photo-1575470522418-b88b692b8084?&auto=format&fit=crop&w=1366&q=80",
+};
 export default function TechForm({ onSuccess, onCancel, initial = {} }) {
   let { layers = [], categories = [] } = useAppData();
   let { formProps, error, isSaving, getValue, updateValue, syncValues, formValues } = useForm({
@@ -83,6 +87,7 @@ export default function TechForm({ onSuccess, onCancel, initial = {} }) {
                   id="category_id"
                   label="Category"
                   onChange={syncValues}
+                  required
                   hint="How would you categorize it?"
                 >
                   <option value="">Choose...</option>

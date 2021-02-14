@@ -2,12 +2,18 @@ import FilterButtons from "@components/FilterButtons";
 import { Row } from "@components/layout";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Layer, useLayers } from "../../App/AppDataProvider";
+import { Category, Layer, useLayers } from "../../App/AppDataProvider";
 import useGraphQL from "../../common/gql";
 import { Tech } from "../../Tech/tech.data";
 import { QUERY_AVAILABLE_TECH } from "../stacks.gql";
 
-export default function TechSelector({ values, onChange, technologies, layers }: Props) {
+export default function TechSelector({
+  values,
+  onChange,
+  technologies,
+  layers,
+  categories,
+}: Props) {
   let [activeLayer, setActiveLayer] = useState(() => (layers.length ? layers[0].id : 0));
   let [showAll, setShowAll] = useState(true);
   useEffect(() => {
@@ -57,54 +63,57 @@ export default function TechSelector({ values, onChange, technologies, layers }:
       {!itemsToShow.length && <p className="mt-2 pt-2 text-gray">Nothing to see here...</p>}
       {!!itemsToShow.length && (
         <>
-          <table className="mt-2 table table-hover" key={activeLayer}>
-            <tbody style={{ border: "1px solid #dadee4" }}>
-              {itemsToShow.map((tech) => (
-                <tr
-                  key={tech.id}
-                  className={"c-hand " + (values.includes(tech.id) ? "bg-secondary" : "")}
-                  onClick={(e) => toggleSelect(tech.id)}
-                >
-                  <td className="hide-mobile" width="110px">
-                    <img src={tech.logo} style={{ width: "100px" }} className="img-fit-cover" />
-                  </td>
-                  <td>
-                    <Row>
-                      <div>
-                        <div className="text-bold">{tech.title}</div>
-                        <div className="text-gray">{tech.tagline}</div>
-                      </div>
-                      <div
-                        style={
-                          {
-                            // flexDirection: "column",
-                            // display: "flex",
-                            // alignItems: "flex-end",
-                          }
-                        }
+          {categories.map((category) => {
+            let categoryTech = itemsToShow.filter((tech) => tech.category.id === category.id);
+            if (!categoryTech.length) return null;
+            return (
+              <div style={{ padding: "20px 0" }}>
+                <h3 className="h5 mt-2">{category.title}</h3>
+                <table className="mt-2 table table-hover" key={activeLayer}>
+                  <tbody style={{ border: "1px solid #dadee4" }}>
+                    {categoryTech.map((tech) => (
+                      <tr
+                        key={tech.id}
+                        className={"c-hand " + (values.includes(tech.id) ? "bg-secondary" : "")}
+                        onClick={(e) => toggleSelect(tech.id)}
                       >
-                        <div className="label label-rounded label-secondary mb-1 mr-1">
-                          {tech?.layer?.title}
-                        </div>
-                        <div className="label label-rounded label-secondary">
-                          {tech?.category?.title}
-                        </div>
-                      </div>
-                    </Row>
-                  </td>
-                  <td className="text-primary">
-                    <div style={{ paddingRight: "8px" }}>
-                      <i
-                        className={
-                          "icon icon-check " + (!values.includes(tech.id) ? "invisible" : "")
-                        }
-                      ></i>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                        <td className="hide-mobile" width="110px">
+                          <img
+                            src={tech.logo}
+                            style={{ width: "150px" }}
+                            className="img-fit-cover"
+                          />
+                        </td>
+                        <td>
+                          <div>
+                            <div className="text-bold">{tech.title}</div>
+                            <div className="text-gray">{tech.tagline}</div>
+                            <div>
+                              <div className="label label-rounded label-secondary mb-1 mr-1">
+                                {tech?.layer?.title}
+                              </div>
+                              <div className="label label-rounded label-secondary">
+                                {tech?.category?.title}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="text-primary">
+                          <div style={{ paddingRight: "8px" }}>
+                            <i
+                              className={
+                                "icon icon-check " + (!values.includes(tech.id) ? "invisible" : "")
+                              }
+                            ></i>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
+          })}
           <div className="mt-2 text-gray">
             Not seeing what you need? <Link to="/tech/new">Create New Tech</Link>
           </div>
@@ -119,4 +128,5 @@ interface Props {
   onChange: (techIds: number[]) => void;
   technologies: Tech[];
   layers: Layer[];
+  categories: Category[];
 }

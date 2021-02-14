@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function Tabs<T>({ value, options = [], onChange, ...rest }: Props<T>) {
+  useEffect(() => {
+    if (!value && options.length) {
+      onChange(options[0].id);
+    }
+  }, [options, value]);
+
   return (
-    <ul className="tab tab-block" {...rest}>
+    <ul className="tab tab-block mb-2" {...rest}>
       {options.map((option) => (
         <li className={"tab-item " + (value === option.id ? "active" : "")}>
           <a
