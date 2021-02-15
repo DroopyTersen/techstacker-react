@@ -29,17 +29,17 @@ export const NewTechScreen = () => {
   );
 };
 
-export const TechScreen = () => {
+export const TechScreen = ({ limit = 1000 }) => {
   return (
     <div className="screen all-tech">
-      <Row alignItems="flex-start" justifyContent="space-between">
+      <Row alignItems="flex-start" justifyContent="space-between" gap="0">
         <h1>Recent Tech</h1>
-        <Link to="/tech/new" className="btn btn-primary">
+        <Link to="/tech/new" className="btn btn-primary mb-2">
           NEW TECH
           <i className="icon icon-plus ml-2"></i>
         </Link>
       </Row>
-      <GraphQL query={QUERY_RECENT_TECH} cacheKey="cached-tech">
+      <GraphQL query={QUERY_RECENT_TECH} variables={{ limit }} cacheKey="cached-tech">
         {({ data }) => <TechGrid technologies={data?.technologies} />}
       </GraphQL>
     </div>

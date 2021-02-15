@@ -25,7 +25,9 @@ export default function App() {
                   <>
                     <LayerScreens.LayersScreen />
                     <div style={{ margin: "80px 0" }} />
-                    <TechScreens.TechScreen />
+                    <StackScreens.StacksScreen limit={3} />
+                    <div style={{ margin: "80px 0" }} />
+                    <TechScreens.TechScreen limit={6} />
                   </>
                 }
                 key="home"
@@ -60,6 +62,11 @@ export default function App() {
                 path="/stacks/new"
                 key="/stacks/new"
                 element={<StackScreens.NewStackScreen />}
+              ></AnimatedRoute>
+              <AnimatedRoute
+                path="/stacks/:stackId"
+                key="/stacks/:stackId"
+                element={<StackScreens.StackDetailsScreen />}
               ></AnimatedRoute>
               <AnimatedRoute
                 path="/stacks/:stackId/edit"

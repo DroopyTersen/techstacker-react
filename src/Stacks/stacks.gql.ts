@@ -52,6 +52,7 @@
 const SELECT_FRAGMENT = `    
 id
 title
+tagline
 image
 description
 technologies(order_by: {technology: {layer: {position: asc}, category: {position: asc}}}) {
@@ -134,4 +135,28 @@ query GetStackForEdit($id:Int!) {
       }
     }
   }
+`;
+
+export const QUERY_RECENT_STACKS = `
+query GetRecentStacks($limit: Int!) {
+    stacks(order_by: {created_at: desc}, limit: $limit) {
+        ${SELECT_FRAGMENT}
+    }
+}
+`;
+
+export const QUERY_STACK_BY_ID = `
+query GetStackById($id: Int!) {
+    stack(id: $id) {
+        ${SELECT_FRAGMENT}
+    }
+}
+`;
+
+export const QUERY_STACKS_BY_TECH = `
+query GetStacksByTech($techId: Int!) {
+    stacks(where: {technologies: {tech_id: {_eq: $techId }}}) {
+      ${SELECT_FRAGMENT}
+    }
+  }  
 `;

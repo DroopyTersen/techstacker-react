@@ -32,6 +32,9 @@ body {
     margin-top: auto !important;
   }
 }
+img {
+  max-width: 100%;
+}
 p {
   max-width: 80ch;
 }
@@ -52,6 +55,7 @@ textarea {
 }
 .label.label-rounded {
   text-align: center;
+  padding: 0.2rem 0.8rem;
 }
 .no-select {
   user-select: none;
@@ -69,4 +73,12 @@ textarea {
       width: 100%;
     }
   }
+}
+
+body ul {
+  list-style: disc outside;
+  padding-left: 0.4rem;
+}
+body ol {
+  list-style: decimal outside;
 }

@@ -42,8 +42,8 @@ export const DELETE = `mutation DeleteTech($id:Int!) {
   }
 }`;
 
-export const QUERY_RECENT_TECH = `query GetTech {
-  technologies(order_by: {created_at: desc}) {
+export const QUERY_RECENT_TECH = `query GetRecentTech($limit:Int!) {
+  technologies(order_by: {created_at: desc}, limit: $limit) {
     ${SELECT_FRAGMENT}
   }
 }`;

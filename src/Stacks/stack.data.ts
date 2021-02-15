@@ -5,11 +5,13 @@ import * as gql from "./stacks.gql";
 export interface StackFormValues {
   id?: number;
   title?: string;
+  tagline?: string;
   image?: string;
   description?: string;
   techIds?: number[];
 }
-
+export const STACK_DEFAULT_IMAGE =
+  "https://images.unsplash.com/photo-1534584633196-6edac9eaff29?auto=format&w=1000&q=40";
 export interface Stack extends StackFormValues {
   technologies: {
     tech_id: number;
@@ -21,6 +23,7 @@ export interface Stack extends StackFormValues {
 interface InsertVariables {
   input: {
     title: string;
+    tagline: string;
     image: string;
     description: string;
     technologies: { data: { tech_id: number }[] };
@@ -31,6 +34,7 @@ interface UpdateVariables {
   id: number;
   input: {
     title: string;
+    tagline: string;
     image: string;
     description: string;
   };
@@ -43,8 +47,7 @@ export const saveStack = async (stack: StackFormValues): Promise<Stack> => {
   }
 
   try {
-    let { id, ...input } = stack;
-    console.log("SAVE STACK", id);
+    let { id } = stack;
     let { data, errors } = id ? await _updateStack(stack) : await _insertStack(stack);
 
     if (errors) throw errors;
@@ -64,6 +67,7 @@ const _updateStack = (stack: StackFormValues) => {
     id: stack.id,
     input: {
       title: stack.title,
+      tagline: stack.tagline,
       description: stack.description,
       image: stack.image,
     },
@@ -78,6 +82,7 @@ const _insertStack = (stack: StackFormValues) => {
   let variables: InsertVariables = {
     input: {
       title: stack.title,
+      tagline: stack.tagline,
       description: stack.description,
       image: stack.image,
       technologies: {

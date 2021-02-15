@@ -9,6 +9,7 @@ import TechGrid from "../../Tech/components/TechGrid";
 import { Tech } from "../../Tech/tech.data";
 import { saveStack, StackFormValues } from "../stack.data";
 import { QUERY_AVAILABLE_TECH } from "../stacks.gql";
+import StackTech from "./StackTech";
 import TechSelector from "./TechSelector";
 
 interface Props {
@@ -19,6 +20,7 @@ interface Props {
 export default function StackForm({ onCancel, onSuccess, initial = {} }: Props) {
   let [techIds, setTechIds] = useState(initial.techIds || []);
   let [title, setTitle] = useState(initial.title || "");
+  let [tagline, setTagline] = useState(initial.tagline || "");
   let [description, setDescription] = useState(initial.description || "");
   let [image, setImage] = useState(initial.image || "");
   let [activeTab, setActiveTab] = useState("select");
@@ -31,6 +33,7 @@ export default function StackForm({ onCancel, onSuccess, initial = {} }: Props) 
     let formValues: StackFormValues = {
       id: initial.id || undefined,
       title,
+      tagline,
       description,
       image,
       techIds,
@@ -64,6 +67,14 @@ export default function StackForm({ onCancel, onSuccess, initial = {} }: Props) 
             value={title}
             onChange={(e) => setTitle(e.currentTarget.value)}
             required
+          />
+          <TextArea
+            id="tagline"
+            label="Tagline"
+            rows={2}
+            hint="Describe the stack in less than one sentance."
+            value={tagline}
+            onChange={(e) => setTagline(e.currentTarget.value)}
           />
 
           <TextArea
@@ -114,40 +125,32 @@ export default function StackForm({ onCancel, onSuccess, initial = {} }: Props) 
           {activeTab === "preview" && (
             <>
               <div className="label">Preview</div>
-              <h2>{title}</h2>
+              {image && (
+                <img
+                  src={image}
+                  className="img-responsive img-fit-cover"
+                  style={{ height: "min(55vh, 50vw)", width: "100%" }}
+                ></img>
+              )}
+              <h1 style={{ marginTop: "30px" }}>{title}</h1>
               <div>
                 <ReactMarkdown source={description} />
               </div>
 
-              {layers.map((layer) => {
-                let layerTech = categories.reduce((layerTech, category) => {
-                  return [
-                    ...layerTech,
-                    ...technologies.filter(
-                      (tech) =>
-                        tech?.category?.id === category?.id &&
-                        tech?.layer?.id === layer?.id &&
-                        techIds.includes(tech.id)
-                    ),
-                  ];
-                }, []);
-                if (!layerTech || !layerTech.length) {
-                  return null;
-                }
-                return (
-                  <div style={{ padding: "20px 0" }}>
-                    <h3 className="h5">{layer.title}</h3>
-                    <div className="mb-2">
-                      <TechGrid
-                        width="200px"
-                        imageSize="120px"
-                        gap="5px"
-                        technologies={layerTech}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
+              <StackTech
+                stack={{
+                  title,
+                  description,
+                  techIds,
+                  technologies: techIds
+                    .map((tech_id) => ({
+                      tech_id,
+                      stack_id: initial.id,
+                      technology: technologies.find((t) => t.id === tech_id),
+                    }))
+                    .filter((t) => t.technology),
+                }}
+              />
             </>
           )}
         </div>
