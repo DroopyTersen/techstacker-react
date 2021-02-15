@@ -128,6 +128,7 @@ query GetStackForEdit($id:Int!) {
     stack(id:$id) {
       id
       image
+      tagline
       title
       description
       technologies {
