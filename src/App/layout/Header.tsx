@@ -6,11 +6,17 @@ function Header(props: HeaderProps) {
   let navigate = useNavigate();
   return (
     <header className="navbar">
-      <nav className="navbar-section">
-        <Link to="/" className="text-bold mr-2 text-large">
-          TechStacker
+      <div className="navbar-section">
+        <Link to="/" className="app-logo text-bold mr-2 text-large">
+          <div style={{ display: "flex" }}>
+            <img width="50px" className="logo" src="/images/techstacker-logo.png" />
+            <div className="ml-2 logo-text label label-primary hide-mobile">
+              <div>TECH</div>
+              <div>STACKER</div>
+            </div>
+          </div>
         </Link>
-      </nav>
+      </div>
       <section className="navbar-center">
         <div className="input-group input-inline">
           <SearchAutocomplete onChange={(techId) => navigate("/tech/" + techId)} />

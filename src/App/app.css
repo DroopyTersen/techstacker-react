@@ -31,6 +31,9 @@ body {
   .card-footer {
     margin-top: auto !important;
   }
+  h1 {
+    font-weight: 400;
+  }
 }
 img {
   max-width: 100%;
@@ -81,4 +84,22 @@ body ul {
 }
 body ol {
   list-style: decimal outside;
+}
+
+.app-logo {
+  &:hover {
+    text-decoration: none;
+  }
+  > div {
+    display: flex;
+    .logo-text {
+      font-family: consolas, monospace;
+      font-weight: 200;
+      font-size: 1.4rem;
+      line-height: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
 }
