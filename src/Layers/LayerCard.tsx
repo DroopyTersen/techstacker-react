@@ -9,7 +9,7 @@ function LayerCard({ layer, imageSize = "300px", ...rest }: Props) {
       image={layer.image}
       imageSize={imageSize}
       subtitle={layer.description}
-      url={"/layers/" + layer.id}
+      url={`/tech?layerId=${layer.id}`}
       {...rest}
     >
       <div className="mt-2">

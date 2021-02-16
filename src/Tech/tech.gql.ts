@@ -4,6 +4,7 @@ const SELECT_FRAGMENT = `
     tagline
     link
     logo
+    tags
     layer_id
     layer {
         id
@@ -29,6 +30,14 @@ export const INSERT = `mutation InsertTech($input:technologies_insert_input!) {
   }
 `;
 
+export const QUERY_TECH = `
+query GetTech($order: [technologies_order_by!], $limit: Int!, $where: technologies_bool_exp!) {
+  technologies(order_by: $order, limit: $limit, where: $where ) {
+    ${SELECT_FRAGMENT}
+  }
+}
+
+`;
 export const UPDATE = `mutation UpdateTech($input: technologies_set_input!, $id:Int!) {
   technology:update_technology(_set: $input, pk_columns: { id: $id}) {
     ${SELECT_FRAGMENT}

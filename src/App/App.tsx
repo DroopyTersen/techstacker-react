@@ -9,6 +9,7 @@ import * as StackScreens from "../Stacks/stack.screens";
 import Header from "./layout/Header";
 import { AnimatePresence, motion, AnimateSharedLayout } from "framer-motion";
 import "./app.css";
+import TechResults from "../Tech/components/TechResults";
 
 export default function App() {
   return (
@@ -27,14 +28,20 @@ export default function App() {
                     <div style={{ margin: "80px 0" }} />
                     <StackScreens.StacksScreen limit={3} />
                     <div style={{ margin: "80px 0" }} />
-                    <TechScreens.TechScreen limit={6} />
+                    <TechScreens.TechScreen title="Recent Tech">
+                      <TechResults limit={6} sortKey="created_at" sortDir="desc" />
+                    </TechScreens.TechScreen>
                   </>
                 }
                 key="home"
               ></AnimatedRoute>
               <AnimatedRoute
                 path="/tech"
-                element={<TechScreens.TechScreen />}
+                element={
+                  <TechScreens.TechScreen title="Web Tech">
+                    <TechResults />
+                  </TechScreens.TechScreen>
+                }
                 key="/tech"
               ></AnimatedRoute>
               <AnimatedRoute

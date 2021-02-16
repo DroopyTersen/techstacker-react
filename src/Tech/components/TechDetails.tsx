@@ -1,4 +1,5 @@
 import { TwoColumn, Row } from "@components/layout";
+import { TagsDisplay } from "@components/tags";
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
@@ -44,15 +45,21 @@ export default function TechDetails({ tech }: Props) {
               )}
               <div>
                 {tech.layer && (
-                  <Link className="btn btn-primary mr-1 mb-1" to={"/layers/" + tech.layer.id}>
+                  <Link className="btn btn-primary mr-1 mb-1" to={`/tech?layerId=${tech.layer.id}`}>
                     {tech.layer.title}
                   </Link>
                 )}
                 {tech.category && (
-                  <Link className="btn btn-primary mb-1" to={"/categories/" + tech.category.id}>
+                  <Link
+                    className="btn btn-primary mb-1"
+                    to={`/tech?categoryId=${tech.category.id}`}
+                  >
                     {tech.category.title}
                   </Link>
                 )}
+              </div>
+              <div className="pt-2">
+                <TagsDisplay tags={tech.tags} getLinkPath={(tag) => `/tech?tag=${tag}`} />
               </div>
               {tech.description && (
                 <div style={{ margin: "30px 0 " }}>

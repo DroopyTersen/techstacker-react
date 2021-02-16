@@ -1,17 +1,20 @@
 import { GraphQL } from "@components/GraphQL";
 import { Row } from "@components/layout";
+import { useQueryParam, useQueryParams } from "@hooks/useQueryParams";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useAppData } from "../App/AppDataProvider";
 
 import TechDetails from "./components/TechDetails";
 import TechForm from "./components/TechForm";
 import TechGrid from "./components/TechGrid";
+import { getTechVariables } from "./tech.data";
 import { QUERY_RECENT_TECH, QUERY_TECH_BY_ID } from "./tech.gql";
 
 export const NewTechScreen = () => {
   let navigate = useNavigate();
-  let queryParams = new URLSearchParams(useLocation().search);
+  let queryParams = useQueryParams();
   let initial = {
     category_id: queryParams.get("categoryId"),
     layer_id: queryParams.get("layerId"),
@@ -29,19 +32,17 @@ export const NewTechScreen = () => {
   );
 };
 
-export const TechScreen = ({ limit = 1000 }) => {
+export const TechScreen = ({ title = "Web Tech", children }) => {
   return (
-    <div className="screen all-tech">
+    <div className="screen tech-screen">
       <Row alignItems="flex-start" justifyContent="space-between" gap="0">
-        <h1>Recent Tech</h1>
+        <h1>{title}</h1>
         <Link to="/tech/new" className="btn btn-primary mb-2">
           NEW TECH
           <i className="icon icon-plus ml-2"></i>
         </Link>
       </Row>
-      <GraphQL query={QUERY_RECENT_TECH} variables={{ limit }} cacheKey="cached-tech">
-        {({ data }) => <TechGrid technologies={data?.technologies} />}
-      </GraphQL>
+      {children}
     </div>
   );
 };
@@ -58,17 +59,20 @@ export const TechDetailsScreen = () => {
 export const EditTechScreen = () => {
   let navigate = useNavigate();
   let { techId } = useParams();
+  let layers = useAppData();
   return (
     <>
       <h1>Edit Tech</h1>
       <GraphQL query={QUERY_TECH_BY_ID} variables={{ id: parseInt(techId) }}>
-        {({ data }) => (
-          <TechForm
-            initial={data?.technology}
-            onCancel={() => history.back()}
-            onSuccess={(result) => navigate("/tech/" + result.id)}
-          />
-        )}
+        {({ data }) =>
+          !layers ? null : (
+            <TechForm
+              initial={data?.technology}
+              onCancel={() => history.back()}
+              onSuccess={(result) => navigate("/tech/" + result.id)}
+            />
+          )
+        }
       </GraphQL>
     </>
   );

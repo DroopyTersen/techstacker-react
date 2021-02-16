@@ -9,7 +9,7 @@ function CategoryCard({ category, imageSize = "300px", ...rest }: CategoryCardPr
       image={category.image}
       imageSize={imageSize}
       subtitle={category.description}
-      url={"/categories/" + category.id}
+      url={`/tech?categoryId=${category.id}`}
       {...rest}
     >
       <div className="mt-2">

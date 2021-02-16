@@ -22,9 +22,10 @@ function createGraphQLClient(endpoint, headers = {}) {
 
 export default function useGraphQL(query, variables = {}) {
   let [forceRefresh, setForceRefresh] = useState(Date.now());
+
   let memoizedVariables = useMemo(() => {
     return variables;
-  }, [Object.values(variables).join(""), Object.keys(variables).join(""), forceRefresh]);
+  }, [JSON.stringify(variables), forceRefresh]);
 
   const refresh = useMemo(() => () => setForceRefresh(Date.now()), [setForceRefresh]);
   let { data: result, isLoading } = useAsyncData(gqlClient.request, [query, memoizedVariables], {

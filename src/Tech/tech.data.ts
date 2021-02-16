@@ -1,3 +1,4 @@
+import { processTags } from "@components/tags";
 import { Category, Layer } from "../App/AppDataProvider";
 import { cachify } from "../common/cache";
 import { gqlClient } from "../common/gql";
@@ -6,17 +7,47 @@ import * as gql from "./tech.gql";
 export interface TechDto {
   id?: number;
   title?: string;
-  category_id?: number;
-  layer_id?: number;
+  category_id?: number | string;
+  layer_id?: number | string;
   description?: string;
   link?: string;
   logo?: string;
   tagline?: string;
+  tags?: string[];
 }
 
 export interface Tech extends TechDto {
   category: Category;
   layer: Layer;
+}
+
+export interface TechQuery {
+  limit?: number | string;
+  sortKey?: string;
+  sortDir?: string;
+  tag?: string;
+  categoryId?: string | number;
+  layerId?: string | number;
+}
+
+export function getTechVariables(query: TechQuery) {
+  let variables: any = {
+    limit: parseInt((query.limit || 100) + "", 10),
+    order: {
+      [query.sortKey || "title"]: query.sortDir || "asc",
+    },
+    where: {},
+  };
+  if (query.tag) {
+    variables.where.tags = { _contains: query.tag };
+  }
+  if (query.layerId) {
+    variables.where.layer_id = { _eq: parseInt(query.layerId + "", 10) };
+  }
+  if (query.categoryId) {
+    variables.where.category_id = { _eq: parseInt(query.categoryId + "", 10) };
+  }
+  return variables;
 }
 
 export const saveTech = async (tech: TechDto): Promise<Tech> => {
@@ -27,6 +58,9 @@ export const saveTech = async (tech: TechDto): Promise<Tech> => {
     let { id, ...input } = tech;
     if (!input.category_id) {
       input.category_id = null;
+    }
+    if (typeof input.tags === "string") {
+      input.tags = processTags(tech.tags);
     }
     let { data, errors } = id
       ? await gqlClient.request(gql.UPDATE, { input, id })

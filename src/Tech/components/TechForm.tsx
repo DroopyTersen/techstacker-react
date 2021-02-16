@@ -3,26 +3,25 @@ import useForm from "@hooks/useForm";
 import useLinkPreview from "@hooks/useLinkPreview";
 import React, { useEffect, useState } from "react";
 import { useAppData } from "../../App/AppDataProvider";
-import { saveTech, Tech } from "../tech.data";
+import { saveTech, Tech, TechDto } from "../tech.data";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
 import TechCard from "./TechCard";
-import { TwoColumn } from "@components/layout";
+import { TagsInput } from "@components/tags";
 
 export interface TechFormProps {
-  initial?: Tech;
+  initial?: TechDto;
   onSuccess: (tech: Tech) => void;
   onCancel: () => void;
 }
 
-export default function TechForm({ onSuccess, onCancel, initial = {} }) {
+export default function TechForm({ onSuccess, onCancel, initial = {} }: TechFormProps) {
   let { layers = [], categories = [] } = useAppData();
   let { formProps, error, isSaving, getValue, updateValue, syncValues, formValues } = useForm({
     onSuccess,
     onSave: saveTech,
     initial,
   });
-  console.log("🚀 | TechForm", formValues, initial);
   let [link, setLink] = React.useState("");
   let linkPreview = useLinkPreview(link);
   useEffect(() => {
@@ -95,7 +94,7 @@ export default function TechForm({ onSuccess, onCancel, initial = {} }) {
                 </Select>
               </div>
             </div>
-
+            <TagsInput defaultValue={initial.tags} />
             <TextArea
               id="tagline"
               label="Tagline"

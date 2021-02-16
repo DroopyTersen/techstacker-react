@@ -30,7 +30,8 @@ export const Input = ({ label, id, hint, ...rest }: InputProps) => {
 
 type TextAreaProps = FormControlProps & React.HTMLProps<HTMLTextAreaElement>;
 
-export const TextArea = ({ label, id, hint, ...rest }: TextAreaProps) => {
+export const TextArea = (props: TextAreaProps) => {
+  let { label, id, hint, ...rest } = props;
   return (
     <FormControl label={label} id={id} hint={hint}>
       <textarea className="form-input" name={id} id={id} rows={6} {...rest}></textarea>

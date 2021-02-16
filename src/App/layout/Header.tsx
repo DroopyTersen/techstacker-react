@@ -9,10 +9,23 @@ function Header(props: HeaderProps) {
       <div className="navbar-section">
         <Link to="/" className="app-logo text-bold mr-2 text-large">
           <div style={{ display: "flex" }}>
-            <img width="50px" className="logo" src="/images/techstacker-logo.png" />
-            <div className="ml-2 logo-text label label-primary hide-mobile">
-              <div>TECH</div>
-              <div>STACKER</div>
+            <img width="50px" className="logo img-fit-contain" src="/images/techstacker-logo.png" />
+            <div className="ml-2 logo-text hide-mobile">
+              <div>
+                <span className="label label-secondary">T</span>
+                <span className="label label-secondary">E</span>
+                <span className="label label-secondary">C</span>
+                <span className="label label-secondary">H</span>
+              </div>
+              <div>
+                <span className="label label-primary">S</span>
+                <span className="label label-primary">T</span>
+                <span className="label label-primary">A</span>
+                <span className="label label-primary">C</span>
+                <span className="label label-primary">K</span>
+                <span className="label label-primary">E</span>
+                <span className="label label-primary">R</span>
+              </div>
             </div>
           </div>
         </Link>
