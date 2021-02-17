@@ -62,6 +62,7 @@ technologies(order_by: {technology: {layer: {position: asc}, category: {position
     id
     title
     logo
+    tags
     layer {
       id
       title
