@@ -29,7 +29,7 @@ export default function StackDetails({ stack }: Props) {
           </Link>
         </div>
         <div className="columns">
-          <section className="column tech-info">
+          <section className="column tech-info col-6 col-md-12">
             <h5 className="text-gray">{stack.tagline}</h5>
             {stack.description && (
               <div style={{ margin: "30px 0 " }}>
@@ -37,7 +37,7 @@ export default function StackDetails({ stack }: Props) {
               </div>
             )}
           </section>
-          <section className="column">
+          <section className="column col-6 col-md-12">
             <h2>Tech Stack</h2>
             <StackTech stack={stack} />
           </section>
