@@ -34,7 +34,7 @@ function Card({ title, subtitle, image, url, imageSize = "300px", children, ...r
 export default React.memo(Card);
 
 export interface CardProps {
-  title: string;
+  title: string | JSX.Element;
   subtitle?: string;
   url?: string;
   image?: string;
