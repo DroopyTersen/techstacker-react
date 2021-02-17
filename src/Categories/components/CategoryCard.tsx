@@ -3,22 +3,21 @@ import React from "react";
 import { Category } from "../../App/AppDataProvider";
 
 function CategoryCard({ category, imageSize = "300px", ...rest }: CategoryCardProps) {
+  let count = category.technologies_aggregate.aggregate.count;
   return (
     <Card
-      title={category.title}
+      title={
+        <div title={`${count} technologies in the ${category.title} category`}>
+          <span>{category.title}</span>
+          <span className="ml-1 badge" data-badge={count}></span>
+        </div>
+      }
       image={category.image}
       imageSize={imageSize}
       subtitle={category.description}
       url={`/tech?categoryId=${category.id}`}
       {...rest}
-    >
-      <div className="mt-2">
-        <span className="label label-rounded label-secondary mr-1">
-          {category.technologies_aggregate.aggregate.count}
-        </span>
-        technologies
-      </div>
-    </Card>
+    ></Card>
   );
 }
 
