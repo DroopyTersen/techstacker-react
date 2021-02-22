@@ -33,11 +33,17 @@ export interface TechQuery {
 export function getTechVariables(query: TechQuery) {
   let variables: any = {
     limit: parseInt((query.limit || 100) + "", 10),
-    order: {
-      [query.sortKey || "title"]: query.sortDir || "asc",
-    },
+    order: [{ layer: { position: "asc" } }, { category: { position: "asc" } }],
+    // {
+    //   ,
+    //   category: { position: "asc" },
+    //   // [query.sortKey || "title"]: query.sortDir || "asc",
+    // },
     where: {},
   };
+  if (query.sortKey) {
+    variables.order = [{ [query.sortKey]: query.sortDir || "asc" }, ...variables.order];
+  }
   if (query.tag) {
     variables.where.tags = { _contains: query.tag };
   }

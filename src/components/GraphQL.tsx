@@ -10,8 +10,12 @@ export function GraphQL({
   cacheKey = "",
   fallback,
 }: GraphQLProps) {
-  let [{ data, errors }] = useGraphQL(query, variables);
-  let [cachedData, setCachedData] = usePersistedState(cacheKey, null, sessionStorage);
+  let [{ data, errors }, { isLoading }] = useGraphQL(query, variables);
+  let [cachedData, setCachedData] = usePersistedState(
+    cacheKey ? JSON.stringify({ key: cacheKey, variables }) : "",
+    null,
+    sessionStorage
+  );
 
   useEffect(() => {
     if (data) {
@@ -22,8 +26,8 @@ export function GraphQL({
   if (errors) {
     return <ErrorCard errors={errors} />;
   }
-  if (!cachedData) {
-    return fallback || <div className="p-2 loading loading-lg"></div>;
+  if (isLoading || !cachedData) {
+    return fallback || <div className="m-2 p-2 loading loading-lg"></div>;
   }
   return children({ data: cachedData });
 }

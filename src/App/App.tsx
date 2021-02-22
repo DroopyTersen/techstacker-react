@@ -29,7 +29,12 @@ export default function App() {
                     <StackScreens.StacksScreen limit={3} />
                     <div style={{ margin: "80px 0" }} />
                     <TechScreens.TechScreen title="Recent Tech">
-                      <TechResults limit={6} sortKey="created_at" sortDir="desc" />
+                      <TechResults
+                        limit={6}
+                        sortKey="created_at"
+                        sortDir="desc"
+                        showControls={false}
+                      />
                     </TechScreens.TechScreen>
                   </>
                 }

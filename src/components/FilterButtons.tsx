@@ -6,7 +6,7 @@ export default function FilterButtons({ value, options = [], onChange }: Props) 
       {options.map((option) => (
         <label
           onClick={() => onChange(option.id)}
-          className={"chip c-hand" + (value === option.id ? " active" : "")}
+          className={"chip c-hand" + (value + "" === option.id + "" ? " active" : "")}
         >
           {option.title}
         </label>

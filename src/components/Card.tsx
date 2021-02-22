@@ -12,6 +12,7 @@ function Card({ title, subtitle, image, url, imageSize = "300px", children, ...r
               style={{ height: imageSize, width: "100%" }}
               className="img-fit-cover img-responsive mb-2"
               src={image}
+              loading="lazy"
             />
           </div>
         </LinkWrapper>

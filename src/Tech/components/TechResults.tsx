@@ -1,12 +1,18 @@
 import { GraphQL } from "@components/GraphQL";
 import { useQueryParams } from "@hooks/useQueryParams";
 import React from "react";
+import { useCategories, useLayers } from "../../App/AppDataProvider";
 import { getTechVariables } from "../tech.data";
 import { QUERY_TECH } from "../tech.gql";
+import TechFilters from "./TechFilters";
 import TechGrid from "./TechGrid";
+import TechTable from "./TechTable";
 
 function TechResults(props: TechResultsProps) {
   let queryParams = useQueryParams();
+  let layers = useLayers();
+  let categories = useCategories();
+
   let variables = getTechVariables({
     limit: props.limit || queryParams.get("limit"),
     sortKey: props.sortKey || queryParams.get("sortKey"),
@@ -15,11 +21,18 @@ function TechResults(props: TechResultsProps) {
     layerId: props.layerId || queryParams.get("layerId"),
     categoryId: props.categoryId || queryParams.get("categoryId"),
   });
-  console.log("🚀 | TechResults | variables", variables, props);
   return (
-    <GraphQL query={QUERY_TECH} variables={variables}>
-      {({ data }) => <TechGrid technologies={data?.technologies} />}
-    </GraphQL>
+    <>
+      {props.showControls !== false && <TechFilters layers={layers} categories={categories} />}
+      <GraphQL query={QUERY_TECH} variables={variables}>
+        {({ data }) => (
+          <>
+            <TechTable technologies={data?.technologies} />
+            {/* <TechGrid technologies={data?.technologies} /> */}
+          </>
+        )}
+      </GraphQL>
+    </>
   );
 }
 
@@ -32,4 +45,5 @@ export interface TechResultsProps {
   tag?: string;
   categoryId?: string | number;
   layerId?: string | number;
+  showControls?: boolean;
 }
