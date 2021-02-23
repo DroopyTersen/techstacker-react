@@ -54,9 +54,9 @@ function Header(props: HeaderProps) {
         <Link to="/layers" className="ml-2">
           LAYERS
         </Link>
-        <Link to="/categories" className="ml-2">
+        {/* <Link to="/categories" className="ml-2">
           CATEGORIES
-        </Link>
+        </Link> */}
       </nav>
     </header>
   );
