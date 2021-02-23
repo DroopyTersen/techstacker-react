@@ -19,7 +19,7 @@ function StackCard({ stack, imageSize = "300px", ...rest }: Props) {
       imageSize={imageSize}
       {...rest}
     >
-      <div>
+      <div style={{ textAlign: "center" }}>
         {stack.technologies.map((t) => (
           <Link className="btn btn-primary mr-1 mb-1" to={"/tech/" + t.technology.id}>
             {t.technology.title}
