@@ -33,7 +33,7 @@ export interface TechQuery {
 export function getTechVariables(query: TechQuery) {
   let variables: any = {
     limit: parseInt((query.limit || 100) + "", 10),
-    order: [{ layer: { position: "asc" } }, { category: { position: "asc" } }],
+    order: [{ layer: { position: "asc" } }, { category: { position: "asc" } }, { title: "asc" }],
     // {
     //   ,
     //   category: { position: "asc" },
@@ -96,3 +96,19 @@ export const searchTech = cachify(
   },
   { getCacheKey: (search) => `search-tech:${search}`, duration: 1000 * 60 }
 );
+
+export const filterTech = (technologies: Tech[], textFilter: string) => {
+  if (!textFilter) return technologies;
+  const check = (val) => (val + "").toLowerCase().includes(text);
+
+  let text = (textFilter + "").toLowerCase();
+  return technologies.filter((t) => {
+    return (
+      check(t.title) ||
+      check(t.tagline) ||
+      check(t.category.title) ||
+      check(t.layer.title) ||
+      (t?.tags || []).some((tag) => tag.includes(text))
+    );
+  });
+};

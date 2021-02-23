@@ -1,5 +1,5 @@
 import React from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 export function Grid({ width = "250px", gap = "10px", children, ...rest }) {
   return (

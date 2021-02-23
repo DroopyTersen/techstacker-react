@@ -1,12 +1,23 @@
 import FilterButtons from "@components/FilterButtons";
 import { Row } from "@components/layout";
+import { useDebouncedEffect } from "@hooks/useDebounce";
 import { useQueryParams } from "@hooks/useQueryParams";
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Category, Layer } from "../../App/AppDataProvider";
 
 function TechFilters(props: TechFiltersProps) {
   console.log("🚀 | TechFilters | props", props);
+  let [textFilter, setTextFilter] = useState("");
+
+  useDebouncedEffect(
+    (debouncedVal) => {
+      updateUrl("filter", debouncedVal);
+    },
+    textFilter,
+    300
+  );
+
   let queryParams = useQueryParams();
   let { pathname } = useLocation();
   let navigate = useNavigate();
@@ -21,9 +32,16 @@ function TechFilters(props: TechFiltersProps) {
     navigate(`${pathname}?${qs}`, { replace: true });
   };
   let activeTag = queryParams.get("tag") || "";
+  let activeFilter = queryParams.get("filter") || "";
+
   let activeCategoryId = queryParams.get("categoryId") || "";
   let activeCategory =
     activeCategoryId && props.categories.find((c) => c.id + "" === activeCategoryId);
+
+  let activeLayerId = queryParams.get("layerId") || "";
+  let activeLayer = activeLayerId && props.layers.find((l) => l.id + "" === activeLayerId);
+
+  let view = queryParams.get("view") || "card";
 
   let updateSort = (val) => {
     if (!val) {
@@ -43,24 +61,41 @@ function TechFilters(props: TechFiltersProps) {
   return (
     <Row justifyContent="space-between" className="mb-2 pb-2 pt-2">
       <div>
-        <FilterButtons
-          options={[{ id: "", title: "All" }, ...props.layers]}
+        {/* <FilterButtons
+          options={props.layers}
           value={queryParams.get("layerId") || ""}
           onChange={(val) => updateUrl("layerId", val)}
-        />
+        /> */}
+        <div className="form-group tech-filter mt-2">
+          <input
+            className="form-input"
+            placeholder="Filter..."
+            value={textFilter}
+            onChange={(e) => setTextFilter(e.currentTarget.value)}
+          />
+        </div>
+      </div>
+      <div>
         <div>
-          {activeTag && (
-            <span className="chip active mr-2">
-              {activeTag}
+          <FilterButtons
+            options={props.layers}
+            value={queryParams.get("layerId") || ""}
+            onChange={(val) => updateUrl("layerId", val)}
+          />
+        </div>
+        <div>
+          {activeLayer && (
+            <span className="chip active mr-1 mt-2">
+              {activeLayer.title}
               <button
                 type="button"
                 className="btn btn-clear"
-                onClick={() => updateUrl("tag", "")}
+                onClick={() => updateUrl("layerId", "")}
               ></button>
             </span>
           )}
           {activeCategory && (
-            <span className="chip active mr-2">
+            <span className="chip active mr-1 mt-2">
               {activeCategory.title}
               <button
                 type="button"
@@ -69,33 +104,55 @@ function TechFilters(props: TechFiltersProps) {
               ></button>
             </span>
           )}
+          {activeTag && (
+            <span className="chip active mr-1 mt-2">
+              {activeTag}
+              <button
+                type="button"
+                className="btn btn-clear"
+                onClick={() => updateUrl("tag", "")}
+              ></button>
+            </span>
+          )}
+          {activeFilter && (
+            <span className="chip active mr-1 mt-2">
+              {activeFilter}
+              <button
+                type="button"
+                className="btn btn-clear"
+                onClick={() => {
+                  updateUrl("filter", "");
+                  setTextFilter("");
+                }}
+              ></button>
+            </span>
+          )}
         </div>
-        {/* <div className="input-group pt-2">
-          <span className="input-group-addon">Category</span>
+      </div>
+
+      <div>
+        <div className="form-group">
+          <label className="form-switch">
+            <input
+              type="checkbox"
+              defaultChecked={view === "table"}
+              onChange={(e) => updateUrl("view", e.currentTarget.checked ? "table" : "card")}
+            />
+            <i className="form-icon"></i> {view === "card" ? "Card view" : "Table view"}
+          </label>
+        </div>
+        <div className="input-group">
+          <span className="input-group-addon">Sort</span>
           <select
             className="form-select"
-            style={{ flex: "0 1 auto" }}
-            value={queryParams.get("categoryId") || ""}
-            onChange={(e) => updateUrl("categoryId", e.currentTarget.value)}
+            value={queryParams.get("sortKey") || ""}
+            onChange={(e) => updateSort(e.currentTarget.value)}
           >
-            <option value="">All</option>
-            {(props.categories || []).map((c) => (
-              <option value={c.id}>{c.title}</option>
-            ))}
+            <option value="">Layer</option>
+            <option value="title">Title</option>
+            <option value="created_at">Recent</option>
           </select>
-        </div> */}
-      </div>
-      <div className="input-group">
-        <span className="input-group-addon">Sort</span>
-        <select
-          className="form-select"
-          value={queryParams.get("sortKey") || ""}
-          onChange={(e) => updateSort(e.currentTarget.value)}
-        >
-          <option value="">Stack Position</option>
-          <option value="title">Title</option>
-          <option value="created_at">Recent</option>
-        </select>
+        </div>
       </div>
     </Row>
   );

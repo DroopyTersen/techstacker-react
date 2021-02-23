@@ -2,7 +2,7 @@ import { GraphQL } from "@components/GraphQL";
 import { useQueryParams } from "@hooks/useQueryParams";
 import React from "react";
 import { useCategories, useLayers } from "../../App/AppDataProvider";
-import { getTechVariables } from "../tech.data";
+import { filterTech, getTechVariables } from "../tech.data";
 import { QUERY_TECH } from "../tech.gql";
 import TechFilters from "./TechFilters";
 import TechGrid from "./TechGrid";
@@ -12,7 +12,8 @@ function TechResults(props: TechResultsProps) {
   let queryParams = useQueryParams();
   let layers = useLayers();
   let categories = useCategories();
-
+  let Element = queryParams.get("view") === "table" ? TechTable : TechGrid;
+  let textFilter = queryParams.get("filter") || "";
   let variables = getTechVariables({
     limit: props.limit || queryParams.get("limit"),
     sortKey: props.sortKey || queryParams.get("sortKey"),
@@ -27,7 +28,7 @@ function TechResults(props: TechResultsProps) {
       <GraphQL query={QUERY_TECH} variables={variables}>
         {({ data }) => (
           <>
-            <TechTable technologies={data?.technologies} />
+            <Element technologies={filterTech(data?.technologies, textFilter)} />
             {/* <TechGrid technologies={data?.technologies} /> */}
           </>
         )}

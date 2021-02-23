@@ -1,8 +1,10 @@
 import Card from "@components/Card";
+import QueryLink from "@components/QueryLink";
 import { TagsDisplay } from "@components/tags";
 import React from "react";
 import { Link } from "react-router-dom";
 import { Tech } from "../tech.data";
+import TechTags from "./TechTags";
 
 function TechCard({ tech, imageSize = "300px", ...rest }: TechCardProps) {
   return (
@@ -15,17 +17,27 @@ function TechCard({ tech, imageSize = "300px", ...rest }: TechCardProps) {
       {...rest}
     >
       <div className="pb-2">
-        <TagsDisplay tags={tech.tags} getLinkPath={(tag) => `/tech?tag=${tag}`} />
+        <TechTags tags={tech.tags} />
       </div>
       {tech.layer && (
-        <Link className="btn btn-primary mr-1 mb-1" to={`/tech?layerId=${tech.layer.id}`}>
+        <QueryLink
+          path="/tech"
+          param="layerId"
+          value={tech.layer.id}
+          className="btn btn-primary mr-1 mb-1"
+        >
           {tech.layer.title}
-        </Link>
+        </QueryLink>
       )}
       {tech.category && (
-        <Link className="btn btn-primary mb-1" to={`/tech?categoryId=${tech.category.id}`}>
+        <QueryLink
+          path="/tech"
+          param="categoryId"
+          value={tech.category.id}
+          className="btn btn-primary mr-1 mb-1"
+        >
           {tech.category.title}
-        </Link>
+        </QueryLink>
       )}
       {tech.link && (
         <div className="text-ellipsis">
