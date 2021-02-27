@@ -19,7 +19,7 @@ function Header(props: HeaderProps) {
                 <span className="label label-secondary">C</span>
                 <span className="label label-secondary">H</span>
               </div>
-              <div>
+              <div style={{ display: "flex", flexWrap: "nowrap" }}>
                 <span className="label label-primary">S</span>
                 <span className="label label-primary">T</span>
                 <span className="label label-primary">A</span>
@@ -63,7 +63,7 @@ function Header(props: HeaderProps) {
           <figure className="avatar ml-2" data-initial={auth.currentUser.name[0]}></figure>
         ) : (
           <Link to="/login" className="btn ml-2">
-            Sign in
+            Log in
           </Link>
         )}
       </nav>

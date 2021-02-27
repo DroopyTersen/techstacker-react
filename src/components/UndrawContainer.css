@@ -1,0 +1,27 @@
+.undraw-content {
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 5vw;
+  text-align: center;
+  /* align-items: center; */
+}
+.undraw-header {
+  padding-top: 5vw;
+}
+.undraw-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.undraw-container > img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}

@@ -1,3 +1,4 @@
+import { UndrawContainer } from "@components/UndrawContainer";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "./oauth";
@@ -14,11 +15,20 @@ export const LoginScreen = () => {
 
   return (
     <div>
-      <h1>Sign in</h1>
-      <UndrawImage name="login" />
-      <button className="btn btn-primary" onClick={() => msAuth.login()}>
-        Log in with Microsoft
-      </button>
+      <UndrawContainer name="login" title={<h1 className="text-bold">Welcome!</h1>}>
+        <div style={{ width: "200px" }}>
+          <div className="btn-group btn-group-block">
+            <button className="btn btn-primary" onClick={() => msAuth.login()}>
+              Log in with Microsoft
+            </button>
+          </div>
+          <div className="btn-group btn-group-block mt-2">
+            <button className="btn btn-primary" disabled={true}>
+              Log in with Github
+            </button>
+          </div>
+        </div>
+      </UndrawContainer>
     </div>
   );
 };

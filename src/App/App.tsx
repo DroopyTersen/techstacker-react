@@ -11,6 +11,7 @@ import { AnimatePresence } from "framer-motion";
 import "./app.css";
 import TechResults from "../Tech/components/TechResults";
 import AnimatedRoute from "@components/AnimatedRoute";
+import { UndrawImage } from "@components/UndrawContainer";
 
 export default function App() {
   return (
@@ -98,6 +99,21 @@ export default function App() {
 const HomeScreen = () => {
   return (
     <>
+      <div className="home-hero">
+        <div className="hero-text col-3 col-sm-6 col-xs-12">
+          <h3 className="text-primary text-bold">What's your stack?</h3>
+          <p className="text-muted text-large">Track the tech used to build web applications.</p>
+          <ul className="text-muted">
+            <li>What are tech the options and which have you used?</li>
+            <li>Amazing pairings? Burnt fingers?</li>
+          </ul>
+        </div>
+        <UndrawImage
+          className="col-9 col-sm-6 col-xs-12"
+          name="building-blocks"
+          style={{ opacity: ".5" }}
+        />
+      </div>
       <LayerScreens.LayersScreen />
       <div style={{ margin: "80px 0" }} />
       <StackScreens.StacksScreen limit={3} />
