@@ -1,24 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 
-// export default function FilterButtons({ value, options = [], onChange }: Props) {
-//   return (
-//     <div className="filter-nav no-select">
-//       {options.map((option) => (
-//         <label
-//           onClick={() => onChange(option.id)}
-//           className={"chip c-hand" + (value + "" === option.id + "" ? " active" : "")}
-//         >
-//           {option.title}
-//         </label>
-//       ))}
-//     </div>
-//   );
-// }
 export default function FilterButtons({ value, options = [], onChange }: Props) {
   return (
     <div className="btn-group">
       {options.map((option) => (
         <button
+          key={option.id}
           type="button"
           onClick={() => {
             // Allow click to deselect
