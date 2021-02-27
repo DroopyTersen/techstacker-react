@@ -3,13 +3,13 @@ import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
 import { AppDataProvider } from "./AppDataProvider";
 import * as TechScreens from "../Tech/tech.screens";
 import * as LayerScreens from "../Layers/layers.screens";
-import * as CategoryScreens from "../Categories/category.screens";
 import * as StackScreens from "../Stacks/stack.screens";
 
 import Header from "./layout/Header";
-import { AnimatePresence, motion, AnimateSharedLayout } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import "./app.css";
 import TechResults from "../Tech/components/TechResults";
+import AnimatedRoute from "@components/AnimatedRoute";
 
 export default function App() {
   return (
@@ -20,26 +20,7 @@ export default function App() {
           <AnimatePresence>
             <Routes>
               {/* <AnimatedRoute path="*" element={<h1>Home</h1>} key="home"></AnimatedRoute> */}
-              <AnimatedRoute
-                path="*"
-                element={
-                  <>
-                    <LayerScreens.LayersScreen />
-                    <div style={{ margin: "80px 0" }} />
-                    <StackScreens.StacksScreen limit={3} />
-                    <div style={{ margin: "80px 0" }} />
-                    <TechScreens.TechScreen title="Recent Tech">
-                      <TechResults
-                        limit={6}
-                        sortKey="created_at"
-                        sortDir="desc"
-                        showControls={false}
-                      />
-                    </TechScreens.TechScreen>
-                  </>
-                }
-                key="home"
-              ></AnimatedRoute>
+              <AnimatedRoute path="*" element={<HomeScreen />} key="home"></AnimatedRoute>
               <AnimatedRoute
                 path="/tech"
                 element={
@@ -96,17 +77,6 @@ export default function App() {
                 element={<LayerScreens.LayerDetailsScreen />}
                 key="/layers/:layerId"
               ></AnimatedRoute>
-
-              <AnimatedRoute
-                path="/categories"
-                element={<CategoryScreens.CategoriesScreen />}
-                key="/categories"
-              ></AnimatedRoute>
-              <AnimatedRoute
-                path="/categories/:categoryId"
-                element={<CategoryScreens.CategoryDetailsScreen />}
-                key="/categories/:categoryId"
-              ></AnimatedRoute>
             </Routes>
           </AnimatePresence>
         </main>
@@ -115,18 +85,16 @@ export default function App() {
   );
 }
 
-function AnimatedRoute({ path, element, children = undefined, ...props }) {
+const HomeScreen = () => {
   return (
-    <Route
-      {...props}
-      path={path}
-      element={
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          {element}
-        </motion.div>
-      }
-    >
-      {children}
-    </Route>
+    <>
+      <LayerScreens.LayersScreen />
+      <div style={{ margin: "80px 0" }} />
+      <StackScreens.StacksScreen limit={3} />
+      <div style={{ margin: "80px 0" }} />
+      <TechScreens.TechScreen title="Recent Tech">
+        <TechResults limit={6} sortKey="created_at" sortDir="desc" showControls={false} />
+      </TechScreens.TechScreen>
+    </>
   );
-}
+};
