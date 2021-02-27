@@ -108,7 +108,7 @@ const HomeScreen = () => {
           <h3 className="text-primary text-bold">What's your stack?</h3>
           <p className="text-muted text-large">Track the tech used to build web applications.</p>
           <ul className="text-muted">
-            <li>What are tech the options and which have you used?</li>
+            <li>What are the tech options and which have you used?</li>
             <li>Amazing pairings? Burnt fingers?</li>
           </ul>
         </div>
