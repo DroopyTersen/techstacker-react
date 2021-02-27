@@ -101,7 +101,6 @@ export abstract class OAuthProvider {
 
   public ensureLogin = async ({ redirectToOriginal = false } = {}): Promise<Auth> => {
     await this.ensureToken();
-    debugger;
     await this.ensureCurrentUser();
     if (redirectToOriginal) {
       let originalUrl = sessionStorage.getItem(cacheKeys.ORIGINAL_URL) || "/";

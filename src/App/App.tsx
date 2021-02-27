@@ -31,7 +31,11 @@ export default function App() {
                 element={<AuthScreens.MicrosoftAuthCallback />}
                 key="logout"
               />
-
+              <AnimatedRoute
+                path="/currentUser"
+                element={<AuthScreens.CurrentUserScreen />}
+                key="currentuser"
+              />
               <AnimatedRoute
                 path="/tech"
                 element={

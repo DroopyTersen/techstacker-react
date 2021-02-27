@@ -1,6 +1,6 @@
 import { UndrawContainer } from "@components/UndrawContainer";
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth } from "./oauth";
 import { MicrosoftAuth } from "./oauth.microsoft";
 
@@ -14,22 +14,44 @@ export const LoginScreen = () => {
   }
 
   return (
-    <div>
-      <UndrawContainer name="login" title={<h1 className="text-bold">Welcome!</h1>}>
-        <div style={{ width: "200px" }}>
-          <div className="btn-group btn-group-block">
-            <button className="btn btn-primary" onClick={() => msAuth.login()}>
-              Log in with Microsoft
-            </button>
-          </div>
-          <div className="btn-group btn-group-block mt-2">
-            <button className="btn btn-primary" disabled={true}>
-              Log in with Github
-            </button>
-          </div>
+    <UndrawContainer name="login" title={<h1 className="text-bold">Hey, come on in!</h1>}>
+      <div style={{ width: "200px" }}>
+        <div className="btn-group btn-group-block">
+          <button className="btn btn-primary box-shadow" onClick={() => msAuth.login()}>
+            Log in with Microsoft
+          </button>
         </div>
+        <div className="btn-group btn-group-block mt-2">
+          <button className="btn btn-primary" disabled={true}>
+            Log in with Github
+          </button>
+        </div>
+      </div>
+    </UndrawContainer>
+  );
+};
+
+export const CurrentUserScreen = () => {
+  let navigate = useNavigate();
+  useEffect(() => {
+    if (!auth.isLoggedIn) {
+      navigate("/login");
+    }
+  });
+
+  if (!auth.isLoggedIn) return null;
+
+  return (
+    <>
+      <UndrawContainer name="profile" title={<h1>{auth.currentUser?.name || "Current User"}</h1>}>
+        <div>
+          <Link to="/logout" className="btn btn-primary box-shadow">
+            Log out
+          </Link>
+        </div>
+        <pre>{JSON.stringify(auth.currentUser, null, 2)}</pre>
       </UndrawContainer>
-    </div>
+    </>
   );
 };
 
@@ -38,10 +60,13 @@ export const MicrosoftAuthCallback = () => {
     msAuth.ensureLogin({ redirectToOriginal: true });
   }, []);
   return (
-    <div>
-      <h1>Finishing sign in...</h1>
-      <UndrawImage name="season-change" />
-    </div>
+    <UndrawContainer
+      //   title={<h2 className="text-muted text-bold">Hold your horses</h2>}
+      title=""
+      name="season-change"
+    >
+      <div className="loading loading-lg"></div>
+    </UndrawContainer>
   );
 };
 
@@ -57,12 +82,19 @@ export const LogoutScreen = ({ force = false, redirect = "/" }) => {
     }
   }, []);
   return (
-    <div>
-      <UndrawImage name="quiting-time" />
-      <button className="btn btn-primary" onClick={logout}>
-        Log out
-      </button>
-    </div>
+    <UndrawContainer
+      opacity=".2"
+      name="quiting-time"
+      title={<h1 className="text-bold">See ya!</h1>}
+    >
+      <div style={{ width: "200px" }}>
+        <div className="btn-group btn-group-block">
+          <button className="btn btn-primary box-shadow" onClick={logout}>
+            Log out
+          </button>
+        </div>
+      </div>
+    </UndrawContainer>
   );
 };
 

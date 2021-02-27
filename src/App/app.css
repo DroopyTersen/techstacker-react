@@ -113,12 +113,16 @@ pre {
   padding: 1rem 0.6rem;
   border-radius: 3px;
   overflow-x: auto;
+  font-size: 12px;
+  text-align: left;
   code {
     color: #444;
     background: transparent;
   }
 }
-
+html .columns {
+  margin: 0;
+}
 .home-hero {
   padding: 5vw 0 80px 0;
   display: flex;
@@ -129,4 +133,8 @@ pre {
   flex-direction: column;
   justify-content: center;
   padding-bottom: 4vw;
+}
+
+.box-shadow {
+  box-shadow: 1px 2px 4px rgb(0 0 0 / 27%);
 }

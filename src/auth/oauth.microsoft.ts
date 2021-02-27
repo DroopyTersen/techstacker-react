@@ -22,7 +22,6 @@ export class MicrosoftAuth extends OAuthProvider {
 
   async fetchCurrentUser() {
     let profile = await fetchGraphProfile(this.auth.accessToken);
-    debugger;
     console.log("🚀 | fetchCurrentUser | profile", profile);
     if (profile) {
       let currentUser: CurrentUser = {

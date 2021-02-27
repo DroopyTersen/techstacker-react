@@ -1,7 +1,7 @@
 import React from "react";
 import "./UndrawContainer.css";
 
-export function UndrawContainer({ name, children, opacity = ".25", title }) {
+export function UndrawContainer({ name, children, opacity = ".2", title }) {
   return (
     <div className="undraw-container">
       <UndrawImage name={name} style={{ opacity }} />

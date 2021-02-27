@@ -60,7 +60,9 @@ function Header(props: HeaderProps) {
           CATEGORIES
         </Link> */}
         {auth.isLoggedIn ? (
-          <figure className="avatar ml-2" data-initial={auth.currentUser.name[0]}></figure>
+          <Link to="/currentuser">
+            <figure className="avatar ml-2" data-initial={auth.currentUser.name[0]}></figure>
+          </Link>
         ) : (
           <Link to="/login" className="btn ml-2">
             Log in
