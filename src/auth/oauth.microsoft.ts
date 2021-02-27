@@ -1,4 +1,4 @@
-import { OAuth } from "./oauth";
+import { CurrentUser, OAuthProvider } from "./oauth";
 
 export interface MicrosoftAuthConfig {
   /** Azure AD App Registration App ID */
@@ -9,7 +9,34 @@ export interface MicrosoftAuthConfig {
   scope?: string;
 }
 
-export interface UserProfile {
+export class MicrosoftAuth extends OAuthProvider {
+  constructor(config: MicrosoftAuthConfig) {
+    super({
+      authorizeEndpoint: "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+      tokenEndpoint: "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+      scope: "User.Read",
+      redirect_uri: location.origin,
+      ...config,
+    });
+  }
+
+  async fetchCurrentUser() {
+    let profile = await fetchGraphProfile(this.auth.accessToken);
+    debugger;
+    console.log("🚀 | fetchCurrentUser | profile", profile);
+    if (profile) {
+      let currentUser: CurrentUser = {
+        ...profile,
+        id: profile.userPrincipalName,
+        name: profile.displayName || `${profile.givenName} ${profile.surname}` || profile.mail,
+      };
+      return currentUser;
+    }
+    return null;
+  }
+}
+
+interface UserProfile {
   displayName: string;
   givenName: string;
   jobTitle: string;
@@ -21,50 +48,8 @@ export interface UserProfile {
   userPrincipalName: string;
   id: string;
 }
-const cacheKeys = {
-  CURRENT_USER: "microsoft-current-user",
-};
 
-export class MicrosoftAuth extends OAuth {
-  constructor(config: MicrosoftAuthConfig) {
-    super({
-      authorizeEndpoint: "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
-      tokenEndpoint: "https://login.microsoftonline.com/common/oauth2/v2.0/token",
-      scope: "User.Read",
-      redirect_uri: location.origin,
-      ...config,
-    });
-  }
-
-  public get currentUser() {
-    try {
-      return JSON.parse(sessionStorage.getItem(cacheKeys.CURRENT_USER));
-    } catch (err) {
-      return null;
-    }
-  }
-
-  logout = () => {
-    super.logout();
-    sessionStorage.setItem(cacheKeys.CURRENT_USER, "");
-  };
-
-  ensureLogin = async (): Promise<UserProfile> => {
-    let oauthResult = await this.ensureToken();
-    let user = this.currentUser;
-
-    if (oauthResult?.access_token && !user) {
-      user = await fetchCurrentUser(oauthResult.access_token);
-      if (user) {
-        sessionStorage.setItem(cacheKeys.CURRENT_USER, JSON.stringify(user));
-      }
-    }
-
-    return user;
-  };
-}
-
-const fetchCurrentUser = function (token): Promise<UserProfile> {
+const fetchGraphProfile = function (token): Promise<UserProfile> {
   const url = "https://graph.microsoft.com/v1.0/me/";
   return fetch(url, {
     headers: {

@@ -4,6 +4,7 @@ import { AppDataProvider } from "./AppDataProvider";
 import * as TechScreens from "../Tech/tech.screens";
 import * as LayerScreens from "../Layers/layers.screens";
 import * as StackScreens from "../Stacks/stack.screens";
+import * as AuthScreens from "../auth/auth.screens";
 
 import Header from "./layout/Header";
 import { AnimatePresence } from "framer-motion";
@@ -21,6 +22,15 @@ export default function App() {
             <Routes>
               {/* <AnimatedRoute path="*" element={<h1>Home</h1>} key="home"></AnimatedRoute> */}
               <AnimatedRoute path="*" element={<HomeScreen />} key="home"></AnimatedRoute>
+
+              <AnimatedRoute path="/login" element={<AuthScreens.LoginScreen />} key="login" />
+              <AnimatedRoute path="/logout" element={<AuthScreens.LogoutScreen />} key="logout" />
+              <AnimatedRoute
+                path="/auth/microsoft"
+                element={<AuthScreens.MicrosoftAuthCallback />}
+                key="logout"
+              />
+
               <AnimatedRoute
                 path="/tech"
                 element={

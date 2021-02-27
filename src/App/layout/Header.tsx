@@ -1,9 +1,11 @@
 import { SearchAutocomplete } from "@components/AutoComplete";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { auth } from "../../auth/oauth";
 
 function Header(props: HeaderProps) {
   let navigate = useNavigate();
+  console.log(auth.currentUser);
   return (
     <header className="navbar">
       <div className="navbar-section">
@@ -45,18 +47,25 @@ function Header(props: HeaderProps) {
         </div>
       </section>
       <nav className="navbar-section">
-        <Link to="/tech" className="ml-2">
+        <Link to="/tech" className="btn btn-link ml-2">
           TECH
         </Link>
-        <Link to="/stacks" className="ml-2">
+        <Link to="/stacks" className="btn btn-link ml-2">
           STACKS
         </Link>
-        <Link to="/layers" className="ml-2">
+        <Link to="/layers" className="btn btn-link ml-2">
           LAYERS
         </Link>
         {/* <Link to="/categories" className="ml-2">
           CATEGORIES
         </Link> */}
+        {auth.isLoggedIn ? (
+          <figure className="avatar ml-2" data-initial={auth.currentUser.name[0]}></figure>
+        ) : (
+          <Link to="/login" className="btn ml-2">
+            Sign in
+          </Link>
+        )}
       </nav>
     </header>
   );

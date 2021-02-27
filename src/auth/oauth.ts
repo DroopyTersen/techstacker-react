@@ -21,7 +21,14 @@ const cacheKeys = {
   LOGIN_STATE: "oauth-login-state",
   LOGIN_RESULT: "oauth-result",
   ORIGINAL_URL: "oauth-original-url",
+  CURRENT_USER: "oauth-current-user",
 };
+
+export interface CurrentUser {
+  id: string;
+  name: string;
+  [key: string]: any;
+}
 
 export interface OAuthConfig {
   authorizeEndpoint: string;
@@ -36,21 +43,10 @@ export interface OAuthResult {
   refresh_token: string;
 }
 
-export class OAuth {
-  constructor(protected config: OAuthConfig) {}
-
-  get accessToken() {
-    return this.tokens?.access_token;
-  }
-
-  get isLoggedIn() {
-    return !!this.accessToken;
-  }
-
+export const auth = {
   get tokens(): OAuthResult {
     try {
       let result = JSON.parse(sessionStorage.getItem(cacheKeys.LOGIN_RESULT));
-      console.log("🚀 | getTokens | result", result);
 
       if (!result.access_token) {
         throw new Error("unexpected data in stored oauth token result");
@@ -59,13 +55,38 @@ export class OAuth {
     } catch (err) {
       return null;
     }
-  }
+  },
 
-  public logout = () => {
-    sessionStorage.setItem(cacheKeys.LOGIN_RESULT, "");
-  };
+  get currentUser(): CurrentUser {
+    try {
+      return JSON.parse(sessionStorage.getItem(cacheKeys.CURRENT_USER));
+    } catch (err) {
+      return null;
+    }
+  },
 
-  public ensureToken = async (): Promise<OAuthResult> => {
+  get accessToken(): string {
+    return auth.tokens?.access_token;
+  },
+
+  get isLoggedIn() {
+    return !!auth.accessToken;
+  },
+
+  logout: () => {
+    sessionStorage.clear();
+  },
+
+  cachKeys: cacheKeys,
+};
+
+type Auth = typeof auth;
+
+export abstract class OAuthProvider {
+  public auth = auth;
+  constructor(protected config: OAuthConfig) {}
+
+  private ensureToken = async (): Promise<OAuthResult> => {
     let params = new URLSearchParams(window.location.search);
     if (
       params.get("code") &&
@@ -75,16 +96,28 @@ export class OAuth {
       return this.processCode();
     }
 
-    return this.tokens || this.login();
+    return auth.tokens || this.login();
+  };
+
+  public ensureLogin = async ({ redirectToOriginal = false } = {}): Promise<Auth> => {
+    await this.ensureToken();
+    debugger;
+    await this.ensureCurrentUser();
+    if (redirectToOriginal) {
+      let originalUrl = sessionStorage.getItem(cacheKeys.ORIGINAL_URL) || "/";
+      window.location.href = originalUrl;
+    }
+    return auth;
   };
 
   public login = async () => {
+    let queryParams = new URLSearchParams(window.location.search);
     const codeVerifier = makeId(43);
     const state = makeId(12);
-
     sessionStorage.setItem(cacheKeys.CODE_VERIFIER, codeVerifier);
     sessionStorage.setItem(cacheKeys.LOGIN_STATE, state);
-    sessionStorage.setItem(cacheKeys.ORIGINAL_URL, window.location.href);
+    let originalUrl = queryParams.get("original_url") || "/";
+    sessionStorage.setItem(cacheKeys.ORIGINAL_URL, originalUrl);
 
     let queryString = toQueryString({
       client_id: this.config.client_id,
@@ -99,6 +132,17 @@ export class OAuth {
     window.location.href = authorizeUrl;
     return null;
   };
+
+  private async ensureCurrentUser() {
+    let user = auth.currentUser;
+    if (auth.accessToken && !user) {
+      user = await this.fetchCurrentUser();
+      sessionStorage.setItem(cacheKeys.CURRENT_USER, JSON.stringify(user));
+    }
+    return user;
+  }
+
+  protected abstract fetchCurrentUser(): Promise<CurrentUser>;
 
   private processCode = async () => {
     let params = new URLSearchParams(window.location.search);
@@ -139,15 +183,8 @@ export class OAuth {
       });
 
     sessionStorage.setItem(cacheKeys.LOGIN_RESULT, JSON.stringify(result));
-    let originalUrl = sessionStorage.getItem(cacheKeys.ORIGINAL_URL);
     sessionStorage.setItem(cacheKeys.CODE_VERIFIER, "");
     sessionStorage.setItem(cacheKeys.LOGIN_STATE, "");
-    sessionStorage.setItem(cacheKeys.ORIGINAL_URL, "");
-
-    if (originalUrl) {
-      window.location.href = originalUrl;
-      return null;
-    }
 
     return result;
   };

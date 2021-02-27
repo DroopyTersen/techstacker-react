@@ -15,12 +15,12 @@ body {
     .navbar-section {
       align-items: flex-start;
     }
-    nav a {
+    /* nav a {
       padding: 10px 10px;
       &:first-child {
         padding: 10px 10px 10px 0;
       }
-    }
+    } */
   }
   main {
     padding: 0 var(--gutter);
