@@ -29,6 +29,7 @@ const cacheKeys = {
 export interface CurrentUser {
   id: string;
   name: string;
+  picture?: string;
   [key: string]: any;
 }
 
