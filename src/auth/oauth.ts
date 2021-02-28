@@ -22,6 +22,7 @@ const cacheKeys = {
   LOGIN_RESULT: "oauth-result",
   ORIGINAL_URL: "oauth-original-url",
   CURRENT_USER: "oauth-current-user",
+  HASURA_TOKEN: "hasura-token",
 };
 
 export interface CurrentUser {
@@ -36,11 +37,13 @@ export interface OAuthConfig {
   client_id: string;
   scope: string;
   redirect_uri: string;
+  connection?: string;
 }
 export interface OAuthResult {
   access_token: string;
-  expires_in: number;
-  refresh_token: string;
+  expires_in?: number;
+  refresh_token?: string;
+  id_token?: string;
 }
 
 export const auth = {
@@ -77,12 +80,17 @@ export const auth = {
     sessionStorage.clear();
   },
 
+  replace: (value: OAuthResult) => {
+    sessionStorage.setItem(cacheKeys.LOGIN_RESULT, JSON.stringify(value));
+  },
+
   cachKeys: cacheKeys,
 };
 
 type Auth = typeof auth;
 
 export abstract class OAuthProvider {
+  public name: string;
   public auth = auth;
   constructor(protected config: OAuthConfig) {}
 
@@ -118,7 +126,7 @@ export abstract class OAuthProvider {
     let originalUrl = queryParams.get("original_url") || "/";
     sessionStorage.setItem(cacheKeys.ORIGINAL_URL, originalUrl);
 
-    let queryString = toQueryString({
+    let authorizeParams: any = {
       client_id: this.config.client_id,
       response_type: "code",
       redirect_uri: this.config.redirect_uri,
@@ -126,7 +134,11 @@ export abstract class OAuthProvider {
       state: state,
       code_challenge: codeVerifier,
       code_challenge_method: "plain",
-    });
+    };
+    if (this.config.connection) {
+      authorizeParams.connection = this.config.connection;
+    }
+    let queryString = toQueryString(authorizeParams);
     let authorizeUrl = this.config.authorizeEndpoint + "?" + queryString;
     window.location.href = authorizeUrl;
     return null;
@@ -172,7 +184,7 @@ export abstract class OAuthProvider {
       body: toQueryString(data),
       headers: {
         accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded;",
+        "Content-Type": "application/x-www-form-urlencoded",
       },
     })
       .then((resp) => resp.json())

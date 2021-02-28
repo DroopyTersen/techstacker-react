@@ -1,13 +1,22 @@
 import { UndrawContainer } from "@components/UndrawContainer";
 import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth } from "./oauth";
+import { auth, OAuthProvider } from "./oauth";
+import { Auth0Provider } from "./oauth.auth0";
 import { MicrosoftAuth } from "./oauth.microsoft";
 
-let msAuth = new MicrosoftAuth({
+let msProvider = new MicrosoftAuth({
   client_id: "4f4f74ac-3c6e-4f3c-a5fd-d16590f893f2",
   redirect_uri: location.origin + "/auth/microsoft",
 });
+
+let auth0Provider = new Auth0Provider({
+  client_id: "6vOmDwnROV8Gkr3NujQvMB1QfLjJhjdM",
+  redirect_uri: location.origin + "/auth/auth0",
+  // connection: "github",
+  domain: "droopytersen.us.auth0.com",
+});
+
 export const LoginScreen = () => {
   if (auth.isLoggedIn) {
     return <div className="loading"></div>;
@@ -17,13 +26,13 @@ export const LoginScreen = () => {
     <UndrawContainer name="login" title={<h1 className="text-bold">Hey, come on in!</h1>}>
       <div style={{ width: "200px" }}>
         <div className="btn-group btn-group-block">
-          <button className="btn btn-primary box-shadow" onClick={() => msAuth.login()}>
-            Log in with Microsoft
+          <button className="btn btn-primary" onClick={() => auth0Provider.login()}>
+            Public Log in
           </button>
         </div>
         <div className="btn-group btn-group-block mt-2">
-          <button className="btn btn-primary" disabled={true}>
-            Log in with Github
+          <button className="btn btn-primary box-shadow" onClick={() => msProvider.login()}>
+            Enterprise Log in
           </button>
         </div>
       </div>
@@ -55,16 +64,48 @@ export const CurrentUserScreen = () => {
   );
 };
 
-export const MicrosoftAuthCallback = () => {
+const setHasuraToken = async (providerName) => {
+  let data = await fetch("/api/login", {
+    method: "POST",
+    body: JSON.stringify({
+      token: auth?.tokens?.id_token || auth.accessToken,
+      user: auth.currentUser,
+      provider: providerName,
+    }),
+  }).then((resp) => resp.json());
+
+  if (data?.token) {
+    sessionStorage.setItem(auth.cachKeys.HASURA_TOKEN, data.token);
+  }
+  return data;
+};
+
+function useAuthCallback(authProvider: OAuthProvider) {
   useEffect(() => {
-    msAuth.ensureLogin({ redirectToOriginal: true });
+    authProvider
+      .ensureLogin()
+      .then(() => setHasuraToken(authProvider.name))
+      .then(() => {
+        window.location.href = "/";
+      });
   }, []);
+}
+
+export const MicrosoftAuthCallback = () => {
+  useAuthCallback(msProvider);
+
   return (
-    <UndrawContainer
-      //   title={<h2 className="text-muted text-bold">Hold your horses</h2>}
-      title=""
-      name="season-change"
-    >
+    <UndrawContainer title="" name="season-change">
+      <div className="loading loading-lg"></div>
+    </UndrawContainer>
+  );
+};
+
+export const GithubAuthCallback = () => {
+  useAuthCallback(auth0Provider);
+
+  return (
+    <UndrawContainer title="" name="season-change">
       <div className="loading loading-lg"></div>
     </UndrawContainer>
   );

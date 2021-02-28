@@ -5,7 +5,6 @@ import { auth } from "../../auth/oauth";
 
 function Header(props: HeaderProps) {
   let navigate = useNavigate();
-  console.log(auth.currentUser);
   return (
     <header className="navbar">
       <div className="navbar-section">
@@ -61,7 +60,7 @@ function Header(props: HeaderProps) {
         </Link> */}
         {auth.isLoggedIn ? (
           <Link to="/currentuser">
-            <figure className="avatar ml-2" data-initial={auth.currentUser.name[0]}></figure>
+            <figure className="avatar ml-2" data-initial={auth.currentUser?.name?.[0]}></figure>
           </Link>
         ) : (
           <Link to="/login" className="btn ml-2">

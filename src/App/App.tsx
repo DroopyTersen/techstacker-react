@@ -29,7 +29,12 @@ export default function App() {
               <AnimatedRoute
                 path="/auth/microsoft"
                 element={<AuthScreens.MicrosoftAuthCallback />}
-                key="logout"
+                key="/auth/microsoft"
+              />
+              <AnimatedRoute
+                path="/auth/auth0"
+                element={<AuthScreens.GithubAuthCallback />}
+                key="/auth/auth0"
               />
               <AnimatedRoute
                 path="/currentUser"

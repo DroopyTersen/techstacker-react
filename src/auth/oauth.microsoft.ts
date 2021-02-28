@@ -10,6 +10,7 @@ export interface MicrosoftAuthConfig {
 }
 
 export class MicrosoftAuth extends OAuthProvider {
+  name = "microsoft";
   constructor(config: MicrosoftAuthConfig) {
     super({
       authorizeEndpoint: "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
@@ -25,7 +26,7 @@ export class MicrosoftAuth extends OAuthProvider {
     console.log("🚀 | fetchCurrentUser | profile", profile);
     if (profile) {
       let currentUser: CurrentUser = {
-        ...profile,
+        profile,
         id: profile.userPrincipalName,
         name: profile.displayName || `${profile.givenName} ${profile.surname}` || profile.mail,
       };

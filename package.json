@@ -1,15 +1,16 @@
 {
-  "name": "droopy-ui",
+  "name": "techstacker",
   "version": "0.0.1",
-  "description": "A React.js UI Toolkit",
+  "description": "An app to track web development technologies.",
   "main": "index.js",
   "scripts": {
-    "start": "snowpack dev",
+    "snowpack": "snowpack dev --open none",
+    "start": "netlify dev",
     "build": "snowpack build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/droopyterse/droopy-ui.git"
+    "url": "git+https://github.com/droopytersen/techstacker-react"
   },
   "keywords": [
     "react"
@@ -17,14 +18,16 @@
   "author": "Andrew Petersen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/droopyterse/droopy-ui/issues"
+    "url": "https://github.com/droopytersen/techstacker-react"
   },
-  "homepage": "https://github.com/droopyterse/droopy-ui#readme",
+  "homepage": "https://techstacker.dev",
   "devDependencies": {
     "@snowpack/plugin-postcss": "^1.1.0",
     "@snowpack/plugin-react-refresh": "^2.4.0",
     "@types/react": "^17.0.1",
     "@types/react-dom": "^17.0.0",
+    "dotenv": "^8.2.0",
+    "netlify-cli": "^3.10.1",
     "postcss": "^8.2.5",
     "postcss-cli": "^8.3.1",
     "postcss-import": "^14.0.0",
@@ -34,6 +37,9 @@
   "dependencies": {
     "framer-motion": "^3.3.0",
     "history": "^5.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
+    "node-fetch": "^2.6.1",
     "react": "^17.0.1",
     "react-autosuggest": "^10.1.0",
     "react-dom": "^17.0.1",
