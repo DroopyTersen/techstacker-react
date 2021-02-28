@@ -20,6 +20,9 @@ exports.handler = async function (event, context) {
     id: user.id.toLowerCase(),
     name: user.name,
     org_id: getOrgId(user, provider),
+    picture: user.picture,
+    profile: user.profile,
+    provider: provider,
   };
 
   let claims = await fillHasuraClaims(hasuraUser);
@@ -56,11 +59,21 @@ async function validateToken(token, provider) {
     return !!profile.userPrincipalName;
   } else if (provider === "auth0") {
     //https://auth0.com/docs/tokens/json-web-tokens/validate-json-web-tokens
-    return true;
+    return validateAuth0Token(token);
   }
   throw new Error("Invalid provider");
 }
 
+function validateAuth0Token(token) {
+  try {
+    let secret = process.env.AUTH0_SIGNING_SECRET;
+    secret = secret.replace(/\\n/g, "\n");
+    let isVerified = jwt.verify(token, secret);
+    return !!isVerified;
+  } catch (err) {
+    return false;
+  }
+}
 function validateUser(user) {
   return user && user.id && user.name && user.profile;
 }
@@ -68,7 +81,7 @@ function validateUser(user) {
 const getOrgId = (user, provider) => {
   if (provider === "microsoft") {
     try {
-      return user.profile.mail.split("@").toLowerCase();
+      return user.profile.mail.split("@")[1].toLowerCase();
     } catch (err) {
       return "public";
     }
@@ -107,7 +120,10 @@ async function ensureHasuraUser(user) {
 }
 
 async function createHasuraUser(user) {
-  let { data } = await hasuraRequest(MUTATION_INSERT_USER, { user });
+  let { data, errors } = await hasuraRequest(MUTATION_INSERT_USER, { user });
+  if (errors) {
+    console.error(JSON.stringify(errors, null, 2));
+  }
   return data.user;
 }
 async function getHasuraUser(id) {
@@ -121,6 +137,8 @@ const QUERY_GET_USER = `query GetUser($id:String!) {
       org_id
       name
       role
+      profile
+      provider
     }
 }`;
 
@@ -129,6 +147,9 @@ const MUTATION_INSERT_USER = `mutation CreateUser($user: users_insert_input!) {
       id
       name
       org_id
+      profile
+      provider
+      role
     }
   }
   `;

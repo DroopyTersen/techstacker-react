@@ -111,11 +111,17 @@ export const GithubAuthCallback = () => {
   );
 };
 
-export const LogoutScreen = ({ force = false, redirect = "/" }) => {
-  let navigate = useNavigate();
-  const logout = () => {
-    auth.logout();
-    navigate(redirect);
+export const LogoutScreen = ({ force = true }) => {
+  const logout = async () => {
+    if (auth.isLoggedIn) {
+      let provider = auth.provider;
+      auth.logout();
+      if (provider === "auth0") {
+        return auth0Provider.logout("/logout");
+      } else {
+        window.location.reload();
+      }
+    }
   };
   useEffect(() => {
     if (force) {
@@ -128,13 +134,15 @@ export const LogoutScreen = ({ force = false, redirect = "/" }) => {
       name="quiting-time"
       title={<h1 className="text-bold">See ya!</h1>}
     >
-      <div style={{ width: "200px" }}>
-        <div className="btn-group btn-group-block">
-          <button className="btn btn-primary box-shadow" onClick={logout}>
-            Log out
-          </button>
+      {!force && (
+        <div style={{ width: "200px" }}>
+          <div className="btn-group btn-group-block">
+            <button className="btn btn-primary box-shadow" onClick={logout}>
+              Log out
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </UndrawContainer>
   );
 };

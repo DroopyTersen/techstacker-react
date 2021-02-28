@@ -22,6 +22,7 @@ const cacheKeys = {
   LOGIN_RESULT: "oauth-result",
   ORIGINAL_URL: "oauth-original-url",
   CURRENT_USER: "oauth-current-user",
+  PROVIDER: "oauth-provider",
   HASURA_TOKEN: "hasura-token",
 };
 
@@ -73,7 +74,11 @@ export const auth = {
   },
 
   get isLoggedIn() {
-    return !!auth.accessToken;
+    return auth.accessToken && auth.currentUser;
+  },
+
+  get provider() {
+    return sessionStorage.getItem(cacheKeys.PROVIDER);
   },
 
   logout: () => {
@@ -123,6 +128,7 @@ export abstract class OAuthProvider {
     const state = makeId(12);
     sessionStorage.setItem(cacheKeys.CODE_VERIFIER, codeVerifier);
     sessionStorage.setItem(cacheKeys.LOGIN_STATE, state);
+    sessionStorage.setItem(cacheKeys.PROVIDER, this.name);
     let originalUrl = queryParams.get("original_url") || "/";
     sessionStorage.setItem(cacheKeys.ORIGINAL_URL, originalUrl);
 
