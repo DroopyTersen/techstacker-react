@@ -1,8 +1,24 @@
 const fetch = require("node-fetch");
 
-async function fillHasuraClaims(user) {
-  let hasuraUser = await ensureHasuraUser(user);
-  let role = hasuraUser.role || "user";
+async function fillHasuraClaims(user, provider) {
+  let userEmail = user.id.toLowerCase();
+  let hasuraUser = await getHasuraUser(userEmail);
+
+  if (!hasuraUser) {
+    let lookedUpOrg = await getOrgFromEmail(userEmail);
+    let newUser = {
+      id: userEmail,
+      name: user.name,
+      profile: user.profile,
+      provider: provider,
+    };
+    if (lookedUpOrg) {
+      newUser.org_id = lookedUpOrg.id || "public";
+    }
+    hasuraUser = await createHasuraUser(newUser);
+  }
+
+  let role = hasuraUser.role || (hasuraUser.org.license === "enterprise" ? "enterprise" : "user");
 
   return {
     "https://hasura.io/jwt/claims": {
@@ -25,13 +41,15 @@ function hasuraRequest(query, variables) {
   }).then((resp) => resp.json());
 }
 
-async function ensureHasuraUser(user) {
-  let hasuraUser = await getHasuraUser(user.id);
-  if (!hasuraUser) {
-    hasuraUser = await createHasuraUser(user);
+const getOrgFromEmail = async (email) => {
+  try {
+    let domain = email.split("@")[1].toLowerCase();
+    let { data, errors } = await hasuraRequest(QUERY_FIND_ORG_BY_DOMAIN, { domain });
+    return data && data.orgs && data.orgs.length ? data.orgs[0] : null;
+  } catch (err) {
+    return null;
   }
-  return hasuraUser;
-}
+};
 
 async function createHasuraUser(user) {
   let { data, errors } = await hasuraRequest(MUTATION_INSERT_USER, { user });
@@ -53,6 +71,9 @@ const QUERY_GET_USER = `query GetUser($id:String!) {
       role
       profile
       provider
+      org {
+        license
+      }
     }
 }`;
 
@@ -64,6 +85,9 @@ const MUTATION_INSERT_USER = `mutation CreateUser($user: users_insert_input!) {
       profile
       provider
       role
+      org {
+        license
+      }
     }
   }
   `;

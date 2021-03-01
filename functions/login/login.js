@@ -17,16 +17,7 @@ exports.handler = async function (event, context) {
     };
   }
 
-  let hasuraUser = {
-    id: user.id.toLowerCase(),
-    name: user.name,
-    org_id: getOrgId(user, provider),
-    picture: user.picture,
-    profile: user.profile,
-    provider: provider,
-  };
-
-  let claims = await hasura.fillHasuraClaims(hasuraUser);
+  let claims = await hasura.fillHasuraClaims(user, provider);
   var hasuraToken = jwt.sign(claims, process.env.JWT_SECRET, {
     noTimestamp: true,
   });
@@ -45,12 +36,12 @@ async function validateToken(token, provider) {
     let profile = await fetchGraphProfile(token);
     return !!profile.userPrincipalName;
   } else if (provider === "auth0") {
-    //https://auth0.com/docs/tokens/json-web-tokens/validate-json-web-tokens
     return validateAuth0Token(token);
   }
   throw new Error("Invalid provider");
 }
 
+//https://auth0.com/docs/tokens/json-web-tokens/validate-json-web-tokens
 function validateAuth0Token(token) {
   try {
     let secret = process.env.AUTH0_SIGNING_SECRET;
@@ -65,18 +56,6 @@ function validateAuth0Token(token) {
 function validateUser(user) {
   return user && user.id && user.name && user.profile;
 }
-
-const getOrgId = (user, provider) => {
-  if (provider === "microsoft") {
-    try {
-      return user.profile.mail.split("@")[1].toLowerCase();
-    } catch (err) {
-      return "public";
-    }
-  }
-
-  return "public";
-};
 
 const fetchGraphProfile = function (token) {
   const url = "https://graph.microsoft.com/v1.0/me/";
