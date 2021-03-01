@@ -1,6 +1,6 @@
 import useAsyncData from "@hooks/useAsyncData";
 import { useMemo, useState } from "react";
-import { auth } from "../auth/oauth";
+import { auth } from "../auth/auth";
 // This code changes with each app
 const ENDPOINT = "https://techstacker.hasura.app/v1/graphql";
 export const gqlClient = createGraphQLClient(ENDPOINT);

@@ -1,21 +1,16 @@
 import { GraphQL } from "@components/GraphQL";
-import { MotionGrid } from "@components/Grid";
 import { Row } from "@components/layout";
 import React from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import StackCard from "./components/StackCard";
+import { useForceLogin } from "../auth/auth.screens";
 import StackDetails from "./components/StackDetails";
 import StackForm from "./components/StackForm";
 import StackGrid from "./components/StackGrid";
 import { QUERY_RECENT_STACKS, QUERY_STACK_BY_ID, QUERY_STACK_FOR_EDIT } from "./stacks.gql";
 
 export const NewStackScreen = () => {
+  useForceLogin();
   let navigate = useNavigate();
-  // let queryParams = new URLSearchParams(useLocation().search);
-  // let initial = {
-  //   category_id: queryParams.get("categoryId"),
-  //   layer_id: queryParams.get("layerId"),
-  // };
 
   return (
     <div className="screen new-stack">
@@ -55,6 +50,7 @@ export const StackDetailsScreen = () => {
 };
 
 export const EditStackScreen = () => {
+  useForceLogin();
   let navigate = useNavigate();
   let { stackId } = useParams();
   return (

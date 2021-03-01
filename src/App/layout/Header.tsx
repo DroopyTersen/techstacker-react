@@ -1,7 +1,7 @@
 import { SearchAutocomplete } from "@components/AutoComplete";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth } from "../../auth/oauth";
+import { auth } from "../../auth/auth";
 
 function Header(props: HeaderProps) {
   let navigate = useNavigate();

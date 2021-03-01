@@ -1,4 +1,6 @@
-import { CurrentUser, OAuthProvider } from "./oauth";
+import { Auth } from "../auth";
+import { CurrentUser } from "../auth.interfaces";
+import { OAuthProvider } from "./OAuthProvider";
 
 export interface MicrosoftAuthConfig {
   /** Azure AD App Registration App ID */
@@ -9,10 +11,10 @@ export interface MicrosoftAuthConfig {
   scope?: string;
 }
 
-export class MicrosoftAuth extends OAuthProvider {
+export default class MicrosoftAuthProvider extends OAuthProvider {
   name = "microsoft";
-  constructor(config: MicrosoftAuthConfig) {
-    super({
+  constructor(auth: Auth, config: MicrosoftAuthConfig) {
+    super(auth, {
       authorizeEndpoint: "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
       tokenEndpoint: "https://login.microsoftonline.com/common/oauth2/v2.0/token",
       scope: "User.Read",
@@ -23,7 +25,7 @@ export class MicrosoftAuth extends OAuthProvider {
 
   async fetchCurrentUser() {
     let profile = await fetchGraphProfile(this.auth.accessToken);
-    console.log("🚀 | fetchCurrentUser | profile", profile);
+
     if (profile) {
       let currentUser: CurrentUser = {
         profile,

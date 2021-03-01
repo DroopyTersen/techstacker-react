@@ -17,7 +17,7 @@ exports.handler = async function (event, context) {
     };
   }
 
-  let claims = await hasura.fillHasuraClaims(user, provider);
+  let [claims, hasuraUser] = await hasura.fillHasuraClaims(user, provider);
   var hasuraToken = jwt.sign(claims, process.env.JWT_SECRET, {
     noTimestamp: true,
   });
@@ -25,7 +25,7 @@ exports.handler = async function (event, context) {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      ...user,
+      user: hasuraUser,
       token: hasuraToken,
     }),
   };

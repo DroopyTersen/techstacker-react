@@ -1,5 +1,7 @@
-import { CurrentUser, OAuthProvider } from "./oauth";
 import decodeJwt from "jwt-decode";
+import { Auth } from "../auth";
+import { CurrentUser } from "../auth.interfaces";
+import { OAuthProvider } from "./OAuthProvider";
 
 export interface Auth0Config {
   client_id: string;
@@ -8,11 +10,11 @@ export interface Auth0Config {
   connection?: string;
 }
 
-export class Auth0Provider extends OAuthProvider {
+export default class Auth0Provider extends OAuthProvider {
   name = "auth0";
   domain: string;
-  constructor(config: Auth0Config) {
-    super({
+  constructor(auth: Auth, config: Auth0Config) {
+    super(auth, {
       client_id: config.client_id,
       authorizeEndpoint: `https://${config.domain}/authorize`,
       tokenEndpoint: `https://${config.domain}/oauth/token`,

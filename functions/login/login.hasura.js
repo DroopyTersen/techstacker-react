@@ -18,16 +18,20 @@ async function fillHasuraClaims(user, provider) {
     hasuraUser = await createHasuraUser(newUser);
   }
 
-  let role = hasuraUser.role || (hasuraUser.org.license === "enterprise" ? "enterprise" : "user");
+  hasuraUser.role =
+    hasuraUser.role || (hasuraUser.org.license === "enterprise" ? "enterprise" : "user");
 
-  return {
-    "https://hasura.io/jwt/claims": {
-      "x-hasura-allowed-roles": [role],
-      "x-hasura-default-role": role,
-      "x-hasura-user-id": hasuraUser.id,
-      "x-hasura-org-id": hasuraUser.org_id,
+  return [
+    {
+      "https://hasura.io/jwt/claims": {
+        "x-hasura-allowed-roles": [hasuraUser.role],
+        "x-hasura-default-role": hasuraUser.role,
+        "x-hasura-user-id": hasuraUser.id,
+        "x-hasura-org-id": hasuraUser.org_id,
+      },
     },
-  };
+    hasuraUser,
+  ];
 }
 
 function hasuraRequest(query, variables) {

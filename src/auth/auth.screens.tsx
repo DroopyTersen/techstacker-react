@@ -1,21 +1,32 @@
 import { UndrawContainer } from "@components/UndrawContainer";
 import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, OAuthProvider } from "./oauth";
-import { Auth0Provider } from "./oauth.auth0";
-import { MicrosoftAuth } from "./oauth.microsoft";
+import { setHasuraToken } from "./auth.hasura";
+import { auth } from "./auth";
+import MicrosoftAuthProvider from "./providers/MicrosoftAuthProvider";
+import Auth0Provider from "./providers/Auth0Provider";
+import { OAuthProvider } from "./providers/OAuthProvider";
 
-let msProvider = new MicrosoftAuth({
+let msProvider = new MicrosoftAuthProvider(auth, {
   client_id: "4f4f74ac-3c6e-4f3c-a5fd-d16590f893f2",
   redirect_uri: location.origin + "/auth/microsoft",
 });
 
-let auth0Provider = new Auth0Provider({
+let auth0Provider = new Auth0Provider(auth, {
   client_id: "6vOmDwnROV8Gkr3NujQvMB1QfLjJhjdM",
   redirect_uri: location.origin + "/auth/auth0",
-  // connection: "github",
+  connection: "github",
   domain: "droopytersen.us.auth0.com",
 });
+
+export function useForceLogin() {
+  let navigate = useNavigate();
+  useEffect(() => {
+    if (!auth.isLoggedIn) {
+      navigate("/login");
+    }
+  }, []);
+}
 
 export const LoginScreen = () => {
   if (auth.isLoggedIn) {
@@ -27,12 +38,12 @@ export const LoginScreen = () => {
       <div style={{ width: "200px" }}>
         <div className="btn-group btn-group-block">
           <button className="btn btn-primary box-shadow" onClick={() => auth0Provider.login()}>
-            Public Log in
+            Log in with Github
           </button>
         </div>
         <div className="btn-group btn-group-block mt-2">
           <button className="btn btn-primary box-shadow" onClick={() => msProvider.login()}>
-            Enterprise Log in
+            Log in with Microsoft
           </button>
         </div>
       </div>
@@ -62,22 +73,6 @@ export const CurrentUserScreen = () => {
       </UndrawContainer>
     </>
   );
-};
-
-const setHasuraToken = async (providerName) => {
-  let data = await fetch("/api/login", {
-    method: "POST",
-    body: JSON.stringify({
-      token: auth?.tokens?.id_token || auth.accessToken,
-      user: auth.currentUser,
-      provider: providerName,
-    }),
-  }).then((resp) => resp.json());
-
-  if (data?.token) {
-    sessionStorage.setItem(auth.cachKeys.HASURA_TOKEN, data.token);
-  }
-  return data;
 };
 
 function useAuthCallback(authProvider: OAuthProvider) {

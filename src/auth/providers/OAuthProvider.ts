@@ -1,3 +1,7 @@
+import { Auth } from "../auth";
+import { cacheKeys } from "../auth.cacheKeys";
+import { CurrentUser, OAuthConfig, OAuthResult } from "../auth.interfaces";
+
 const toQueryString = (values: object) => {
   let params = new URLSearchParams("");
   Object.keys(values).forEach((key) => params.set(key, values[key]));
@@ -16,93 +20,9 @@ const makeId = (length) => {
   return result;
 };
 
-const cacheKeys = {
-  CODE_VERIFIER: "oauth-code-verifier",
-  LOGIN_STATE: "oauth-login-state",
-  LOGIN_RESULT: "oauth-result",
-  ORIGINAL_URL: "oauth-original-url",
-  CURRENT_USER: "oauth-current-user",
-  PROVIDER: "oauth-provider",
-  HASURA_TOKEN: "hasura-token",
-};
-
-export interface CurrentUser {
-  id: string;
-  name: string;
-  picture?: string;
-  [key: string]: any;
-}
-
-export interface OAuthConfig {
-  authorizeEndpoint: string;
-  tokenEndpoint: string;
-  client_id: string;
-  scope: string;
-  redirect_uri: string;
-  connection?: string;
-}
-export interface OAuthResult {
-  access_token: string;
-  expires_in?: number;
-  refresh_token?: string;
-  id_token?: string;
-}
-
-export const auth = {
-  get tokens(): OAuthResult {
-    try {
-      let result = JSON.parse(sessionStorage.getItem(cacheKeys.LOGIN_RESULT));
-
-      if (!result.access_token) {
-        throw new Error("unexpected data in stored oauth token result");
-      }
-      return result;
-    } catch (err) {
-      return null;
-    }
-  },
-
-  get currentUser(): CurrentUser {
-    try {
-      return JSON.parse(sessionStorage.getItem(cacheKeys.CURRENT_USER));
-    } catch (err) {
-      return null;
-    }
-  },
-
-  get accessToken(): string {
-    return auth.tokens?.access_token;
-  },
-
-  get isLoggedIn() {
-    return auth.accessToken && auth.currentUser;
-  },
-
-  get provider() {
-    return sessionStorage.getItem(cacheKeys.PROVIDER);
-  },
-
-  logout: () => {
-    sessionStorage.clear();
-  },
-
-  replace: (value: OAuthResult) => {
-    sessionStorage.setItem(cacheKeys.LOGIN_RESULT, JSON.stringify(value));
-  },
-  // Layering this in
-  get hasuraToken() {
-    return sessionStorage.getItem(cacheKeys.HASURA_TOKEN);
-  },
-
-  cachKeys: cacheKeys,
-};
-
-type Auth = typeof auth;
-
 export abstract class OAuthProvider {
   public name: string;
-  public auth = auth;
-  constructor(protected config: OAuthConfig) {}
+  constructor(public auth: Auth, protected config: OAuthConfig) {}
 
   private ensureToken = async (): Promise<OAuthResult> => {
     let params = new URLSearchParams(window.location.search);
@@ -114,7 +34,7 @@ export abstract class OAuthProvider {
       return this.processCode();
     }
 
-    return auth.tokens || this.login();
+    return this.auth.tokens || this.login();
   };
 
   public ensureLogin = async ({ redirectToOriginal = false } = {}): Promise<Auth> => {
@@ -124,7 +44,7 @@ export abstract class OAuthProvider {
       let originalUrl = sessionStorage.getItem(cacheKeys.ORIGINAL_URL) || "/";
       window.location.href = originalUrl;
     }
-    return auth;
+    return this.auth;
   };
 
   public login = async () => {
@@ -156,8 +76,8 @@ export abstract class OAuthProvider {
   };
 
   private async ensureCurrentUser() {
-    let user = auth.currentUser;
-    if (auth.accessToken && !user) {
+    let user = this.auth.currentUser;
+    if (this.auth.accessToken && !user) {
       user = await this.fetchCurrentUser();
       sessionStorage.setItem(cacheKeys.CURRENT_USER, JSON.stringify(user));
     }

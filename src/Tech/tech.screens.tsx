@@ -1,18 +1,19 @@
 import { GraphQL } from "@components/GraphQL";
 import { Row } from "@components/layout";
-import { useQueryParam, useQueryParams } from "@hooks/useQueryParams";
+import { useQueryParams } from "@hooks/useQueryParams";
 
-import React, { useMemo } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import React from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAppData } from "../App/AppDataProvider";
+import { useForceLogin } from "../auth/auth.screens";
 
 import TechDetails from "./components/TechDetails";
 import TechForm from "./components/TechForm";
-import TechGrid from "./components/TechGrid";
-import { getTechVariables } from "./tech.data";
-import { QUERY_RECENT_TECH, QUERY_TECH_BY_ID } from "./tech.gql";
+
+import { QUERY_TECH_BY_ID } from "./tech.gql";
 
 export const NewTechScreen = () => {
+  useForceLogin();
   let navigate = useNavigate();
   let queryParams = useQueryParams();
   let initial = {
@@ -57,6 +58,7 @@ export const TechDetailsScreen = () => {
 };
 
 export const EditTechScreen = () => {
+  useForceLogin();
   let navigate = useNavigate();
   let { techId } = useParams();
   let layers = useAppData();
