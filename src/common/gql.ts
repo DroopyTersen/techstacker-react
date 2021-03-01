@@ -1,17 +1,22 @@
 import useAsyncData from "@hooks/useAsyncData";
 import { useMemo, useState } from "react";
+import { auth } from "../auth/oauth";
 // This code changes with each app
 const ENDPOINT = "https://techstacker.hasura.app/v1/graphql";
 export const gqlClient = createGraphQLClient(ENDPOINT);
 
-function createGraphQLClient(endpoint, headers = {}) {
+function createGraphQLClient(endpoint) {
   let request = function (query, variables = {}) {
+    let token = auth.hasuraToken;
+    let headers = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
     return fetch(endpoint, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...headers,
-      },
+      headers,
       // spread the passed in queryOptions onto the POST body
       body: JSON.stringify({ query, variables }),
     }).then((res) => res.json());

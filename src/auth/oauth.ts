@@ -89,6 +89,10 @@ export const auth = {
   replace: (value: OAuthResult) => {
     sessionStorage.setItem(cacheKeys.LOGIN_RESULT, JSON.stringify(value));
   },
+  // Layering this in
+  get hasuraToken() {
+    return sessionStorage.getItem(cacheKeys.HASURA_TOKEN);
+  },
 
   cachKeys: cacheKeys,
 };
