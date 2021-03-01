@@ -48,7 +48,7 @@ export const LayersScreen = () => {
       <MotionGrid width="270px" gap="20px">
         {layers.map((layer) => (
           <MotionGrid.Item key={layer.id}>
-            <LayerCard layer={layer} imageSize="200px" style={{ height: "100%" }} />
+            <LayerCard layer={layer} imageSize="230px" style={{ height: "100%" }} />
           </MotionGrid.Item>
         ))}
       </MotionGrid>

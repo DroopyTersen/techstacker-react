@@ -26,7 +26,7 @@ export const LoginScreen = () => {
     <UndrawContainer name="login" title={<h1 className="text-bold">Hey, come on in!</h1>}>
       <div style={{ width: "200px" }}>
         <div className="btn-group btn-group-block">
-          <button className="btn btn-primary" onClick={() => auth0Provider.login()}>
+          <button className="btn btn-primary box-shadow" onClick={() => auth0Provider.login()}>
             Public Log in
           </button>
         </div>
