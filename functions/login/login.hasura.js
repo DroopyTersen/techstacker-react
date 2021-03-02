@@ -11,9 +11,10 @@ async function fillHasuraClaims(user, provider) {
       name: user.name,
       profile: user.profile,
       provider: provider,
+      org_id: "public",
     };
     if (lookedUpOrg) {
-      newUser.org_id = lookedUpOrg.id || "public";
+      newUser.org_id = lookedUpOrg.id;
     }
     hasuraUser = await createHasuraUser(newUser);
   }
