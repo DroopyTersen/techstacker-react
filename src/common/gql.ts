@@ -1,8 +1,6 @@
-import useAsyncData from "@hooks/useAsyncData";
-import { useMemo, useState } from "react";
-import { QueryClient, useMutation, useQuery } from "react-query";
+import { QueryClient, useMutation, useQuery, UseQueryOptions } from "react-query";
 import { auth } from "../auth/auth";
-// This code changes with each app
+
 const ENDPOINT = "https://techstacker.hasura.app/v1/graphql";
 export const gqlClient = createGraphQLClient(ENDPOINT);
 export const queryClient = new QueryClient();
@@ -48,10 +46,20 @@ export interface GraphQLResult<T = any> {
   errors?: GraphQLError[];
 }
 
-export function useGqlQuery<T = any>(query: string, variables: any = {}) {
-  return useQuery<T>([query, variables], () => gqlClient.request(query, variables), {
-    retry: false,
-  });
+export function useGqlQuery<T = any>(
+  query: string,
+  variables = {},
+  options?: Partial<UseQueryOptions>
+) {
+  let [_, operationName] = /query ([a-zA-Z]+)/.exec(query) || [];
+  return useQuery<T>(
+    [operationName || query, variables],
+    () => gqlClient.request(query, variables),
+    {
+      retry: false,
+      ...(options as any),
+    }
+  );
 }
 
 export function useGqlMutation(query: string, variables: any = {}) {

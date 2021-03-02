@@ -49,8 +49,7 @@ function TechResults(props: Props) {
 
 export default React.memo(TechResults);
 
-const QUERY_TECH = `
-query GetTech($order: [technologies_order_by!], $limit: Int!, $where: technologies_bool_exp!) {
+const QUERY_TECH = `query GetTech($order: [technologies_order_by!], $limit: Int!, $where: technologies_bool_exp!) {
   technologies(order_by: $order, limit: $limit, where: $where ) {
     ${TECH_SELECT_FRAGMENT}
   }

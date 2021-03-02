@@ -13,11 +13,13 @@ import AnimatedRoute from "@components/AnimatedRoute";
 import { QueryClientProvider } from "react-query";
 import { queryClient } from "../common/gql";
 import HomeScreen from "./HomeScreen";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 export default function App() {
   return (
     <Router>
       <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
         <Header />
         <main>
           <AnimatePresence>

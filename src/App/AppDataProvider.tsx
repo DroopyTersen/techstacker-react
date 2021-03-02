@@ -25,7 +25,7 @@ export interface Category {
 }
 
 export function useLayersAndCategories() {
-  let { data } = useGqlQuery(QUERY);
+  let { data } = useGqlQuery(QUERY, {}, { staleTime: 600000 });
 
   return {
     layers: data?.layers || [],

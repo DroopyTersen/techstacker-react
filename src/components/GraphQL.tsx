@@ -2,8 +2,14 @@ import React from "react";
 import { useGqlQuery } from "../common/gql";
 import { ErrorContainer } from "./errors";
 
-export function GraphQL({ query, variables = {}, children, fallback }: GraphQLProps) {
-  let { data, error, isLoading } = useGqlQuery(query, variables);
+export function GraphQL({
+  query,
+  variables = {},
+  children,
+  fallback,
+  staleTime = 0,
+}: GraphQLProps) {
+  let { data, error, isLoading } = useGqlQuery(query, variables, { staleTime });
 
   if (error) {
     return <ErrorContainer title="Uh oh... GraphQL Error">{error + ""}</ErrorContainer>;
@@ -16,6 +22,7 @@ export function GraphQL({ query, variables = {}, children, fallback }: GraphQLPr
 
 interface GraphQLProps {
   query: string;
+  staleTime?: number;
   variables?: {
     [key: string]: any;
   };

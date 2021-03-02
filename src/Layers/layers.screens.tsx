@@ -1,13 +1,14 @@
 import { GraphQL } from "@components/GraphQL";
 import React from "react";
-import { useGqlQuery } from "../common/gql";
 import LayersGrid from "./LayersGrid";
 
 export const LayersScreen = () => {
   return (
     <>
       <h1>Application Layers</h1>
-      <GraphQL query={LAYERS_QUERY}>{({ data }) => <LayersGrid layers={data?.layers} />}</GraphQL>
+      <GraphQL query={LAYERS_QUERY} staleTime={600000}>
+        {({ data }) => <LayersGrid layers={data?.layers} />}
+      </GraphQL>
     </>
   );
 };
