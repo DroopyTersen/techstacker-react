@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
-import { AppDataProvider } from "./AppDataProvider";
 import * as TechScreens from "../Tech/tech.screens";
 import * as LayerScreens from "../Layers/layers.screens";
 import * as StackScreens from "../Stacks/stack.screens";
@@ -11,12 +10,14 @@ import { AnimatePresence } from "framer-motion";
 import "./app.css";
 import TechResults from "../Tech/components/TechResults";
 import AnimatedRoute from "@components/AnimatedRoute";
-import { UndrawImage } from "@components/UndrawContainer";
+import { QueryClientProvider } from "react-query";
+import { queryClient } from "../common/gql";
+import HomeScreen from "./HomeScreen";
 
 export default function App() {
   return (
     <Router>
-      <AppDataProvider>
+      <QueryClientProvider client={queryClient}>
         <Header />
         <main>
           <AnimatePresence>
@@ -58,11 +59,11 @@ export default function App() {
               <AnimatedRoute
                 path="/tech/new"
                 key="/tech/new"
-                element={<TechScreens.NewTechScreen />}
+                element={<TechScreens.TechFormScreen title="New Tech" />}
               ></AnimatedRoute>
               <AnimatedRoute
                 path="/tech/:techId/edit"
-                element={<TechScreens.EditTechScreen />}
+                element={<TechScreens.TechFormScreen title="Edit Tech" />}
                 key="/tech/:techId/edit"
               ></AnimatedRoute>
 
@@ -74,7 +75,7 @@ export default function App() {
               <AnimatedRoute
                 path="/stacks/new"
                 key="/stacks/new"
-                element={<StackScreens.NewStackScreen />}
+                element={<StackScreens.StackFormScreen title="New Stack" />}
               ></AnimatedRoute>
               <AnimatedRoute
                 path="/stacks/:stackId"
@@ -84,7 +85,7 @@ export default function App() {
               <AnimatedRoute
                 path="/stacks/:stackId/edit"
                 key="/stacks/:stackId/edit"
-                element={<StackScreens.EditStackScreen />}
+                element={<StackScreens.StackFormScreen title="Edit Stack" />}
               ></AnimatedRoute>
 
               <AnimatedRoute
@@ -92,44 +93,10 @@ export default function App() {
                 element={<LayerScreens.LayersScreen />}
                 key="/layers"
               ></AnimatedRoute>
-              <AnimatedRoute
-                path="/layers/:layerId"
-                element={<LayerScreens.LayerDetailsScreen />}
-                key="/layers/:layerId"
-              ></AnimatedRoute>
             </Routes>
           </AnimatePresence>
         </main>
-      </AppDataProvider>
+      </QueryClientProvider>
     </Router>
   );
 }
-
-const HomeScreen = () => {
-  return (
-    <>
-      <div className="home-hero">
-        <div className="hero-text col-3 col-sm-6 col-xs-12">
-          <h3 className="text-primary text-bold">What's your stack?</h3>
-          <p className="text-muted text-large">Track the tech used to build web applications.</p>
-          <ul className="text-muted">
-            <li>What are the tech options and which have you used?</li>
-            <li>Amazing pairings? Burnt fingers?</li>
-          </ul>
-        </div>
-        <UndrawImage
-          className="col-9 col-sm-6 col-xs-12"
-          name="building-blocks"
-          style={{ opacity: ".5" }}
-        />
-      </div>
-      <LayerScreens.LayersScreen />
-      <div style={{ margin: "80px 0" }} />
-      <StackScreens.StacksScreen limit={3} />
-      <div style={{ margin: "80px 0" }} />
-      <TechScreens.TechScreen title="Recent Tech">
-        <TechResults limit={6} sortKey="created_at" sortDir="desc" showControls={false} />
-      </TechScreens.TechScreen>
-    </>
-  );
-};

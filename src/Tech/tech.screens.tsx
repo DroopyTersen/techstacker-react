@@ -1,37 +1,14 @@
 import { GraphQL } from "@components/GraphQL";
 import { Row } from "@components/layout";
-import { useQueryParams } from "@hooks/useQueryParams";
-
 import React from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useAppData } from "../App/AppDataProvider";
 import { useForceLogin } from "../auth/auth.screens";
+import { STACK_SELECT_FRAGMENT } from "../Stacks/stacks.gql";
 
 import TechDetails from "./components/TechDetails";
 import TechForm from "./components/TechForm";
 
-import { QUERY_TECH_BY_ID } from "./tech.gql";
-
-export const NewTechScreen = () => {
-  useForceLogin();
-  let navigate = useNavigate();
-  let queryParams = useQueryParams();
-  let initial = {
-    category_id: queryParams.get("categoryId"),
-    layer_id: queryParams.get("layerId"),
-  };
-
-  return (
-    <div className="screen new-tech">
-      <h1>New Tech</h1>
-      <TechForm
-        initial={initial}
-        onCancel={() => history.back()}
-        onSuccess={(result) => navigate("/tech/" + result.id)}
-      />
-    </div>
-  );
-};
+import { TECH_SELECT_FRAGMENT } from "./tech.gql";
 
 export const TechScreen = ({ title = "Web Tech", children }) => {
   return (
@@ -48,33 +25,56 @@ export const TechScreen = ({ title = "Web Tech", children }) => {
   );
 };
 
+const QUERY_TECH_DETAILS = `query TechDetails($id:Int!) {
+  technology(id:$id) {
+    ${TECH_SELECT_FRAGMENT}
+    description
+  }
+  stacks(where: {technologies: {tech_id: {_eq: $id }}}) {
+    ${STACK_SELECT_FRAGMENT}
+  }
+}`;
+
 export const TechDetailsScreen = () => {
   let { techId } = useParams();
   return (
-    <GraphQL query={QUERY_TECH_BY_ID} variables={{ id: parseInt(techId) }}>
-      {({ data }) => <TechDetails tech={data?.technology} />}
+    <GraphQL query={QUERY_TECH_DETAILS} variables={{ id: parseInt(techId) }}>
+      {({ data }) => <TechDetails tech={data?.technology} stacks={data?.stacks || []} />}
     </GraphQL>
   );
 };
 
-export const EditTechScreen = () => {
+export const QUERY_TECH_FOR_FORM = `query TechForm($id:Int!) {
+  technology(id:$id) {
+    ${TECH_SELECT_FRAGMENT}
+    description
+  }
+  layers(order_by: {position: asc}) {
+    title
+    id
+  }
+  categories(order_by: {position: asc}) {
+    title
+    id
+  }
+}`;
+
+export const TechFormScreen = ({ title }) => {
   useForceLogin();
   let navigate = useNavigate();
-  let { techId } = useParams();
-  let layers = useAppData();
+  let { techId = "-1" } = useParams();
   return (
     <>
-      <h1>Edit Tech</h1>
-      <GraphQL query={QUERY_TECH_BY_ID} variables={{ id: parseInt(techId) }}>
-        {({ data }) =>
-          !layers ? null : (
-            <TechForm
-              initial={data?.technology}
-              onCancel={() => history.back()}
-              onSuccess={(result) => navigate("/tech/" + result.id)}
-            />
-          )
-        }
+      <h1>{title}</h1>
+      <GraphQL query={QUERY_TECH_FOR_FORM} variables={{ id: parseInt(techId) }}>
+        {({ data }) => (
+          <TechForm
+            {...data}
+            initial={data?.technology || {}}
+            onCancel={() => history.back()}
+            onSuccess={(result) => navigate("/tech/" + result.id)}
+          />
+        )}
       </GraphQL>
     </>
   );

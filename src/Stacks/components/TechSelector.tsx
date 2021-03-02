@@ -1,11 +1,9 @@
 import FilterButtons from "@components/FilterButtons";
-import { Row } from "@components/layout";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Category, Layer, useLayers } from "../../App/AppDataProvider";
-import useGraphQL from "../../common/gql";
+import { Category, Layer } from "../../App/AppDataProvider";
+
 import { Tech } from "../../Tech/tech.data";
-import { QUERY_AVAILABLE_TECH } from "../stacks.gql";
 
 export default function TechSelector({
   values,

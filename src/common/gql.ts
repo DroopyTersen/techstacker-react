@@ -1,12 +1,14 @@
 import useAsyncData from "@hooks/useAsyncData";
 import { useMemo, useState } from "react";
+import { QueryClient, useMutation, useQuery } from "react-query";
 import { auth } from "../auth/auth";
 // This code changes with each app
 const ENDPOINT = "https://techstacker.hasura.app/v1/graphql";
 export const gqlClient = createGraphQLClient(ENDPOINT);
+export const queryClient = new QueryClient();
 
 function createGraphQLClient(endpoint) {
-  let request = function (query, variables = {}) {
+  let request = async function (query, variables = {}) {
     let token = auth.hasuraToken;
     let headers = {
       "Content-Type": "application/json",
@@ -14,32 +16,44 @@ function createGraphQLClient(endpoint) {
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
-    return fetch(endpoint, {
+    let resp = await fetch(endpoint, {
       method: "POST",
       headers,
       // spread the passed in queryOptions onto the POST body
       body: JSON.stringify({ query, variables }),
-    }).then((res) => res.json());
+    });
+
+    if (!resp.ok) {
+      throw new Error(`GQL Request Error: ${resp.status} ${resp.statusText}`);
+    }
+    let result: GraphQLResult = await resp.json();
+    if (result.errors) {
+      console.log("🚀 | request | errors", result.errors);
+      throw new Error(result.errors.map((e) => e.message).join(", "));
+    }
+    return result?.data;
   };
 
   return { request };
 }
 
-export default function useGraphQL(query, variables = {}) {
-  let [forceRefresh, setForceRefresh] = useState(Date.now());
+export interface GraphQLError {
+  message: string;
+  path?: (string | number)[];
+  locations: any[];
+}
 
-  let memoizedVariables = useMemo(() => {
-    return variables;
-  }, [JSON.stringify(variables), forceRefresh]);
+export interface GraphQLResult<T = any> {
+  data?: T;
+  errors?: GraphQLError[];
+}
 
-  const refresh = useMemo(() => () => setForceRefresh(Date.now()), [setForceRefresh]);
-  let { data: result, isLoading } = useAsyncData(gqlClient.request, [query, memoizedVariables], {
-    data: null,
+export function useGqlQuery<T = any>(query: string, variables: any = {}) {
+  return useQuery<T>([query, variables], () => gqlClient.request(query, variables), {
+    retry: false,
   });
-  return [
-    {
-      ...result,
-    },
-    { isLoading, refresh },
-  ] as [{ data: any; errors?: Error[] }, { isLoading: Boolean; refresh: () => void }];
+}
+
+export function useGqlMutation(query: string, variables: any = {}) {
+  return useMutation(() => gqlClient.request(query, variables));
 }

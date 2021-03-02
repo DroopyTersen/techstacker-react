@@ -34,11 +34,6 @@ export function getTechVariables(query: TechQuery) {
   let variables: any = {
     limit: parseInt((query.limit || 100) + "", 10),
     order: [{ layer: { position: "asc" } }, { category: { position: "asc" } }, { title: "asc" }],
-    // {
-    //   ,
-    //   category: { position: "asc" },
-    //   // [query.sortKey || "title"]: query.sortDir || "asc",
-    // },
     where: {},
   };
   if (query.sortKey) {
@@ -68,13 +63,10 @@ export const saveTech = async (tech: TechDto): Promise<Tech> => {
     if (typeof input.tags === "string") {
       input.tags = processTags(tech.tags);
     }
-    let { data, errors } = id
+    let data = id
       ? await gqlClient.request(gql.UPDATE, { input, id })
       : await gqlClient.request(gql.INSERT, { input });
 
-    if (errors) {
-      throw errors;
-    }
     if (!data?.technology) {
       throw new Error("Unable to find target Tech");
     }
@@ -88,7 +80,7 @@ export const saveTech = async (tech: TechDto): Promise<Tech> => {
 export const searchTech = cachify(
   async (search: string): Promise<Tech[]> => {
     if (!search) return [];
-    let { data } = await gqlClient.request(gql.QUERY_SEARCH_TECH, {
+    let data = await gqlClient.request(gql.QUERY_SEARCH_TECH, {
       search: `%${search}%`,
     });
 

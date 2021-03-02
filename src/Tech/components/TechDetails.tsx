@@ -1,20 +1,18 @@
-import { TwoColumn, Row } from "@components/layout";
 import { TagsDisplay } from "@components/tags";
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
-import useGraphQL from "../../common/gql";
 import StackGrid from "../../Stacks/components/StackGrid";
-import { QUERY_STACKS_BY_TECH } from "../../Stacks/stacks.gql";
+import { Stack } from "../../Stacks/stack.data";
 import { Tech } from "../tech.data";
 
-export default function TechDetails({ tech }: Props) {
+interface Props {
+  tech: Tech;
+  stacks: Stack[];
+}
+export default function TechDetails({ tech, stacks = [] }: Props) {
   if (!tech) return null;
-  let [{ data }, { isLoading: isLoadingStacks }] = useGraphQL(QUERY_STACKS_BY_TECH, {
-    techId: tech.id,
-  });
 
-  let stacks = data?.stacks || [];
   return (
     <>
       {tech.logo && (
@@ -74,14 +72,11 @@ export default function TechDetails({ tech }: Props) {
             {stacks.length ? (
               <StackGrid stacks={stacks} />
             ) : (
-              !isLoadingStacks && <p className="text-gray">No stacks are using this tech yet...</p>
+              <p className="text-gray">No stacks are using this tech yet...</p>
             )}
           </div>
         </div>
       </div>
     </>
   );
-}
-interface Props {
-  tech: Tech;
 }

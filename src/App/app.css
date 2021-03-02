@@ -115,6 +115,8 @@ pre {
   overflow-x: auto;
   font-size: 12px;
   text-align: left;
+  max-width: 90vw;
+  overflow: auto;
   code {
     color: #444;
     background: transparent;
@@ -122,6 +124,10 @@ pre {
 }
 html .columns {
   margin: 0;
+}
+html .hero {
+  padding-bottom: min(10vw, 3rem);
+  padding-top: min(10vw, 3rem);
 }
 .home-hero {
   padding: 5vw 0 80px 0;

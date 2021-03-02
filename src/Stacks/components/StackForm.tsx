@@ -1,14 +1,10 @@
 import { Input, TextArea } from "@components/forms";
-import { TwoColumn, TwoColumnEven } from "@components/layout";
 import Tabs from "@components/Tabs";
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { useAppData } from "../../App/AppDataProvider";
-import useGraphQL from "../../common/gql";
-import TechGrid from "../../Tech/components/TechGrid";
+import { Category, Layer } from "../../App/AppDataProvider";
 import { Tech } from "../../Tech/tech.data";
 import { saveStack, StackFormValues } from "../stack.data";
-import { QUERY_AVAILABLE_TECH } from "../stacks.gql";
 import StackTech from "./StackTech";
 import TechSelector from "./TechSelector";
 
@@ -16,18 +12,27 @@ interface Props {
   onSuccess: (stack: StackFormValues) => void;
   onCancel: () => void;
   initial?: StackFormValues;
+  technologies: Tech[];
+  layers: Layer[];
+  categories: Category[];
 }
-export default function StackForm({ onCancel, onSuccess, initial = {} }: Props) {
+
+export default function StackForm({
+  onCancel,
+  onSuccess,
+  initial = {},
+  layers = [],
+  categories = [],
+  technologies = [],
+}: Props) {
   let [techIds, setTechIds] = useState(initial.techIds || []);
   let [title, setTitle] = useState(initial.title || "");
   let [tagline, setTagline] = useState(initial.tagline || "");
   let [description, setDescription] = useState(initial.description || "");
   let [image, setImage] = useState(initial.image || "");
+
   let [activeTab, setActiveTab] = useState("select");
 
-  let { layers = [], categories = [] } = useAppData();
-  let [{ data }] = useGraphQL(QUERY_AVAILABLE_TECH);
-  let technologies: Tech[] = data?.technologies || [];
   let onSubmit = async (e) => {
     e.preventDefault();
     let formValues: StackFormValues = {
@@ -47,6 +52,7 @@ export default function StackForm({ onCancel, onSuccess, initial = {} }: Props) 
       console.error(err);
     }
   };
+
   return (
     <form onSubmit={onSubmit}>
       <div
@@ -93,10 +99,7 @@ export default function StackForm({ onCancel, onSuccess, initial = {} }: Props) 
             onChange={(e) => setDescription(e.currentTarget.value)}
             rows={7}
           />
-          <div
-            className="form-actions mt-2"
-            // style={{ top: "-40px", right: "0" }}
-          >
+          <div className="form-actions mt-2">
             <button className="btn btn-link mr-2" type="button" onClick={() => onCancel()}>
               CANCEL
             </button>

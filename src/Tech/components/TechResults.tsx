@@ -1,19 +1,30 @@
 import { GraphQL } from "@components/GraphQL";
 import { useQueryParams } from "@hooks/useQueryParams";
 import React from "react";
-import { useCategories, useLayers } from "../../App/AppDataProvider";
+import { useLayersAndCategories } from "../../App/AppDataProvider";
 import { filterTech, getTechVariables } from "../tech.data";
-import { QUERY_TECH } from "../tech.gql";
+import { TECH_SELECT_FRAGMENT } from "../tech.gql";
 import TechFilters from "./TechFilters";
 import TechGrid from "./TechGrid";
 import TechTable from "./TechTable";
 
-function TechResults(props: TechResultsProps) {
+interface Props {
+  limit?: number;
+  sortKey?: string;
+  sortDir?: string;
+  tag?: string;
+  categoryId?: string | number;
+  layerId?: string | number;
+  showControls?: boolean;
+}
+
+function TechResults(props: Props) {
   let queryParams = useQueryParams();
-  let layers = useLayers();
-  let categories = useCategories();
+
+  let { layers, categories } = useLayersAndCategories();
   let Element = queryParams.get("view") === "table" ? TechTable : TechGrid;
   let textFilter = queryParams.get("filter") || "";
+
   let variables = getTechVariables({
     limit: props.limit || queryParams.get("limit"),
     sortKey: props.sortKey || queryParams.get("sortKey"),
@@ -29,7 +40,6 @@ function TechResults(props: TechResultsProps) {
         {({ data }) => (
           <>
             <Element technologies={filterTech(data?.technologies, textFilter)} />
-            {/* <TechGrid technologies={data?.technologies} /> */}
           </>
         )}
       </GraphQL>
@@ -39,12 +49,18 @@ function TechResults(props: TechResultsProps) {
 
 export default React.memo(TechResults);
 
-export interface TechResultsProps {
-  limit?: number;
-  sortKey?: string;
-  sortDir?: string;
-  tag?: string;
-  categoryId?: string | number;
-  layerId?: string | number;
-  showControls?: boolean;
+const QUERY_TECH = `
+query GetTech($order: [technologies_order_by!], $limit: Int!, $where: technologies_bool_exp!) {
+  technologies(order_by: $order, limit: $limit, where: $where ) {
+    ${TECH_SELECT_FRAGMENT}
+  }
+  layers(order_by: {position: asc}) {
+    title
+    id
+  }
+  categories(order_by: {position: asc}) {
+    title
+    id
+  }
 }
+`;

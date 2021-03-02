@@ -23,7 +23,7 @@ export function useForceLogin() {
   let navigate = useNavigate();
   useEffect(() => {
     if (!auth.isLoggedIn) {
-      navigate("/login");
+      navigate("/login", { replace: true });
     }
   }, []);
 }
@@ -69,7 +69,7 @@ export const CurrentUserScreen = () => {
             Log out
           </Link>
         </div>
-        <pre>{JSON.stringify(auth.currentUser, null, 2)}</pre>
+        <pre className="box-shadow">{JSON.stringify(auth.currentUser, null, 2)}</pre>
       </UndrawContainer>
     </>
   );
@@ -141,9 +141,3 @@ export const LogoutScreen = ({ force = true }) => {
     </UndrawContainer>
   );
 };
-
-function UndrawImage({ name, ...rest }) {
-  let src = `/images/undraw/${name}.svg`;
-
-  return <img src={src} {...rest} />;
-}

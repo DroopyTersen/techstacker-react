@@ -1,5 +1,5 @@
 import React from "react";
-import { useCategories, useLayers } from "../../App/AppDataProvider";
+import { useLayers } from "../../App/AppDataProvider";
 import TechGrid from "../../Tech/components/TechGrid";
 import { Stack } from "../stack.data";
 

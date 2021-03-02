@@ -48,9 +48,8 @@ export const saveStack = async (stack: StackFormValues): Promise<Stack> => {
 
   try {
     let { id } = stack;
-    let { data, errors } = id ? await _updateStack(stack) : await _insertStack(stack);
+    let data = id ? await _updateStack(stack) : await _insertStack(stack);
 
-    if (errors) throw errors;
     if (!data?.stack) {
       throw new Error("Invalid Save Stack response from server.");
     }
@@ -62,7 +61,6 @@ export const saveStack = async (stack: StackFormValues): Promise<Stack> => {
 };
 
 const _updateStack = (stack: StackFormValues) => {
-  console.log("UPDATING!!!");
   let variables: UpdateVariables = {
     id: stack.id,
     input: {
@@ -78,7 +76,6 @@ const _updateStack = (stack: StackFormValues) => {
 };
 
 const _insertStack = (stack: StackFormValues) => {
-  console.log("INSTERTING!!!");
   let variables: InsertVariables = {
     input: {
       title: stack.title,

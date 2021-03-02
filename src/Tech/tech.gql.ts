@@ -1,4 +1,4 @@
-const SELECT_FRAGMENT = `
+export const TECH_SELECT_FRAGMENT = `
     id
     title
     tagline
@@ -25,22 +25,14 @@ const SELECT_FRAGMENT = `
 
 export const INSERT = `mutation InsertTech($input:technologies_insert_input!) {
     technology:insert_technology(object: $input ) {
-      ${SELECT_FRAGMENT}
+      ${TECH_SELECT_FRAGMENT}
     }
   }
 `;
 
-export const QUERY_TECH = `
-query GetTech($order: [technologies_order_by!], $limit: Int!, $where: technologies_bool_exp!) {
-  technologies(order_by: $order, limit: $limit, where: $where ) {
-    ${SELECT_FRAGMENT}
-  }
-}
-
-`;
 export const UPDATE = `mutation UpdateTech($input: technologies_set_input!, $id:Int!) {
   technology:update_technology(_set: $input, pk_columns: { id: $id}) {
-    ${SELECT_FRAGMENT}
+    ${TECH_SELECT_FRAGMENT}
   }
 }
 `;
@@ -51,25 +43,6 @@ export const DELETE = `mutation DeleteTech($id:Int!) {
   }
 }`;
 
-export const QUERY_RECENT_TECH = `query GetRecentTech($limit:Int!) {
-  technologies(order_by: {created_at: desc}, limit: $limit) {
-    ${SELECT_FRAGMENT}
-  }
-}`;
-export const QUERY_TECH_BY_ID = `query GetTechById($id:Int!) {
-  technology(id:$id) {
-    ${SELECT_FRAGMENT}
-    description
-  }
-}`;
-export const QUERY_FILTERED_TECH = `
-query GetFilteredTech($order: [technologies_order_by!], $where: technologies_bool_exp!) {
-  technologies(order_by: $order, where: $where) {
-    ${SELECT_FRAGMENT}
-  }
-}
-`;
-
 export const QUERY_SEARCH_TECH = `
 query SearchTech($search:String!) {
   technologies(order_by: { title: asc}, where: { title: { _ilike: $search }}) {
@@ -77,10 +50,4 @@ query SearchTech($search:String!) {
     title
   }
 }
-
 `;
-
-// {
-//   "order": { "title": "asc"},
-//   "where": {"category_id": { "_eq": 3}, "title": { "_like": "frame"} }
-// }

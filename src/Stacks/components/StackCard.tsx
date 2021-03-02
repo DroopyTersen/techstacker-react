@@ -35,3 +35,16 @@ function StackCard({ stack, imageSize = "300px", ...rest }: Props) {
 }
 
 export default React.memo(StackCard);
+
+export const STACK_CARD_SELECT_FRAGMENT = `
+  id
+  title
+  tagline
+  image
+  technologies(order_by: {technology: {layer: {position: asc}, category: {position: asc}}}) {
+    technology {
+      id
+      title
+    }
+  }
+`;

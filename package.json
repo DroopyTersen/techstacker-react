@@ -44,6 +44,7 @@
     "react-autosuggest": "^10.1.0",
     "react-dom": "^17.0.1",
     "react-markdown": "^5.0.3",
+    "react-query": "^3.12.0",
     "react-router-dom": "^6.0.0-beta.0",
     "slugify": "^1.4.6"
   }

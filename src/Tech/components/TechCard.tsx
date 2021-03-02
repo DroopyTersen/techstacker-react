@@ -57,3 +57,22 @@ export interface TechCardProps {
   imageSize?: string;
   [key: string]: any;
 }
+
+export const TECH_CARD_SELECT_FRAGMENT = `
+  id
+  title
+  tagline
+  link
+  logo
+  tags
+  layer {
+      id
+      title
+
+  }
+  category_id
+  category {
+      id
+      title
+  }
+`;

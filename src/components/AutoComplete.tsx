@@ -3,9 +3,7 @@ import { useDebouncedEffect, useDebouncedValue } from "@hooks/useDebounce";
 import useDebouncedInputValue from "@hooks/useDebouncedInputValue";
 import React, { useEffect, useMemo, useState } from "react";
 import AutoSuggest from "react-autosuggest";
-import useGraphQL from "../common/gql";
 import { searchTech, Tech } from "../Tech/tech.data";
-import { QUERY_SEARCH_TECH } from "../Tech/tech.gql";
 import "./Autocomplete.css";
 
 export function SearchAutocomplete({ onChange }) {

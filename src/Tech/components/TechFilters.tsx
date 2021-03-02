@@ -59,14 +59,9 @@ function TechFilters(props: TechFiltersProps) {
   };
 
   return (
-    <Row justifyContent="space-between" className="mb-2 pb-2 pt-2">
+    <Row justifyContent="space-between" alignItems="flex-start" gap="0" className="mb-2 pb-2 pt-2">
       <div>
-        {/* <FilterButtons
-          options={props.layers}
-          value={queryParams.get("layerId") || ""}
-          onChange={(val) => updateUrl("layerId", val)}
-        /> */}
-        <div className="form-group tech-filter mt-2">
+        <div className="form-group tech-filter mt-2 mb-2">
           <input
             className="form-input"
             placeholder="Filter..."
@@ -75,7 +70,7 @@ function TechFilters(props: TechFiltersProps) {
           />
         </div>
       </div>
-      <div>
+      <div className="mb-2">
         <div>
           <FilterButtons
             options={props.layers}
@@ -131,7 +126,7 @@ function TechFilters(props: TechFiltersProps) {
       </div>
 
       <div>
-        <div className="form-group">
+        {/* <div className="form-group">
           <label className="form-switch">
             <input
               type="checkbox"
@@ -140,7 +135,7 @@ function TechFilters(props: TechFiltersProps) {
             />
             <i className="form-icon"></i> {view === "card" ? "Card view" : "Table view"}
           </label>
-        </div>
+        </div> */}
         <div className="input-group">
           <span className="input-group-addon">Sort</span>
           <select

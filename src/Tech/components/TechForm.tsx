@@ -1,8 +1,8 @@
 import { Input, TextArea, Select } from "@components/forms";
 import useForm from "@hooks/useForm";
 import useLinkPreview from "@hooks/useLinkPreview";
-import React, { useEffect, useState } from "react";
-import { useAppData } from "../../App/AppDataProvider";
+import React, { useEffect } from "react";
+import { Category, Layer } from "../../App/AppDataProvider";
 import { saveTech, Tech, TechDto } from "../tech.data";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
@@ -10,20 +10,29 @@ import TechCard from "./TechCard";
 import { TagsInput } from "@components/tags";
 
 export interface TechFormProps {
+  layers: Layer[];
+  categories: Category[];
   initial?: TechDto;
   onSuccess: (tech: Tech) => void;
   onCancel: () => void;
 }
 
-export default function TechForm({ onSuccess, onCancel, initial = {} }: TechFormProps) {
-  let { layers = [], categories = [] } = useAppData();
+export default function TechForm({
+  onSuccess,
+  onCancel,
+  initial = {},
+  layers,
+  categories,
+}: TechFormProps) {
   let { formProps, error, isSaving, getValue, updateValue, syncValues, formValues } = useForm({
     onSuccess,
     onSave: saveTech,
     initial,
   });
+
   let [link, setLink] = React.useState("");
   let linkPreview = useLinkPreview(link);
+
   useEffect(() => {
     if (linkPreview.title && !getValue("tagline")) {
       updateValue("tagline", linkPreview.title);
@@ -35,8 +44,10 @@ export default function TechForm({ onSuccess, onCancel, initial = {} }: TechForm
       updateValue("logo", linkPreview.image);
     }
   }, [linkPreview]);
+
   let chosenCategory = categories.find((c) => c.id + "" === formValues.category_id);
   let chosenLayer = layers.find((l) => l.id + "" === formValues.layer_id);
+
   return (
     <form {...formProps}>
       <div

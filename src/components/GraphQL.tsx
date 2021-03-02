@@ -1,35 +1,17 @@
-import usePersistedState from "@hooks/usePersistedState";
-import React, { useEffect, useMemo } from "react";
-import useGraphQL from "../common/gql";
-import { ErrorCard } from "./errors";
+import React from "react";
+import { useGqlQuery } from "../common/gql";
+import { ErrorContainer } from "./errors";
 
-export function GraphQL({
-  query,
-  variables = {},
-  children,
-  cacheKey = "",
-  fallback,
-}: GraphQLProps) {
-  let [{ data, errors }, { isLoading }] = useGraphQL(query, variables);
-  let [cachedData, setCachedData] = usePersistedState(
-    cacheKey ? JSON.stringify({ key: cacheKey, variables }) : "",
-    null,
-    sessionStorage
-  );
+export function GraphQL({ query, variables = {}, children, fallback }: GraphQLProps) {
+  let { data, error, isLoading } = useGqlQuery(query, variables);
 
-  useEffect(() => {
-    if (data) {
-      setCachedData(data);
-    }
-  }, [data]);
-
-  if (errors) {
-    return <ErrorCard errors={errors} />;
+  if (error) {
+    return <ErrorContainer title="Uh oh... GraphQL Error">{error + ""}</ErrorContainer>;
   }
-  if (isLoading || !cachedData) {
+  if (isLoading) {
     return fallback || <div className="m-2 p-2 loading loading-lg"></div>;
   }
-  return children({ data: cachedData });
+  return children({ data });
 }
 
 interface GraphQLProps {
@@ -38,6 +20,5 @@ interface GraphQLProps {
     [key: string]: any;
   };
   children: ({ data }) => JSX.Element;
-  cacheKey?: string;
   fallback?: JSX.Element;
 }
