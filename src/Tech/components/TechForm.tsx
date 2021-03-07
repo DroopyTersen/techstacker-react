@@ -1,13 +1,14 @@
 import { Input, TextArea, Select } from "@components/forms";
-import useForm from "@hooks/useForm";
+// import useForm from "@hooks/useForm";
 import useLinkPreview from "@hooks/useLinkPreview";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Category, Layer } from "../../App/AppDataProvider";
 import { saveTech, Tech, TechDto } from "../tech.data";
 import ReactMarkdown from "react-markdown";
-import { Link } from "react-router-dom";
 import TechCard from "./TechCard";
 import { TagsInput } from "@components/tags";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { useSaveForm } from "@hooks/useForm";
 
 export interface TechFormProps {
   layers: Layer[];
@@ -24,9 +25,9 @@ export default function TechForm({
   layers,
   categories,
 }: TechFormProps) {
-  let { formProps, error, isSaving, getValue, updateValue, syncValues, formValues } = useForm({
-    onSuccess,
+  const form = useSaveForm({
     onSave: saveTech,
+    onSuccess,
     initial,
   });
 
@@ -34,22 +35,24 @@ export default function TechForm({
   let linkPreview = useLinkPreview(link);
 
   useEffect(() => {
-    if (linkPreview.title && !getValue("tagline")) {
-      updateValue("tagline", linkPreview.title);
+    if (linkPreview.title && !form.getValues("tagline")) {
+      form.setValue("tagline", linkPreview.title);
     }
-    if (linkPreview.description && !getValue("description")) {
-      updateValue("description", linkPreview.description);
+    if (linkPreview.description && !form.getValues("description")) {
+      form.setValue("description", linkPreview.description);
     }
-    if (linkPreview.image && !getValue("logo")) {
-      updateValue("logo", linkPreview.image);
+    if (linkPreview.image && !form.getValues("logo")) {
+      form.setValue("logo", linkPreview.image);
     }
   }, [linkPreview]);
 
-  let chosenCategory = categories.find((c) => c.id + "" === formValues.category_id);
-  let chosenLayer = layers.find((l) => l.id + "" === formValues.layer_id);
+  let watchedValues = form.watch();
+  let chosenCategory = categories.find((c) => c.id + "" === watchedValues?.category_id);
+  let chosenLayer = layers.find((l) => l.id + "" === watchedValues?.layer_id);
 
+  // TODO: Handle errors
   return (
-    <form {...formProps}>
+    <form onSubmit={form.onSubmit}>
       <div
         className="form-actions mb-2 p-absolute hide-mobile"
         style={{ top: "-40px", right: "0" }}
@@ -61,14 +64,16 @@ export default function TechForm({
       </div>
       <div className="columns">
         <div className="column col-6 col-md-12">
-          <fieldset disabled={isSaving}>
+          <fieldset disabled={form.isSaving}>
             <input type="hidden" name="id"></input>
-            <Input id="title" label="Title" required onBlur={syncValues} />
+            <Input id="title" label="Title" ref={form.register({ required: true })} required />
             <TextArea
               id="link"
               label="Link"
               rows={2}
               hint="Link to the official documentation."
+              ref={form.register({ required: true })}
+              required
               onBlur={(e: any) => setLink(e.target.value)}
             />
             <div className="columns">
@@ -76,9 +81,9 @@ export default function TechForm({
                 <Select
                   id="layer_id"
                   label="Tech Layer"
+                  ref={form.register({ required: true })}
                   required
                   hint="Where in the tech stack does it live?"
-                  onChange={syncValues}
                 >
                   <option value="">Choose...</option>
                   {layers.map((layer) => (
@@ -92,7 +97,7 @@ export default function TechForm({
                 <Select
                   id="category_id"
                   label="Category"
-                  onChange={syncValues}
+                  ref={form.register({ required: true })}
                   required
                   hint="How would you categorize it?"
                 >
@@ -105,29 +110,38 @@ export default function TechForm({
                 </Select>
               </div>
             </div>
-            <TagsInput defaultValue={initial.tags} />
+            <Controller
+              name="tags"
+              control={form.control}
+              defaultValue={initial.tags}
+              render={(props) => {
+                return <TagsInput defaultValue={initial.tags} onChange={props.onChange} />;
+              }}
+            />
             <TextArea
               id="tagline"
               label="Tagline"
               rows={2}
               hint="How does it describe itself?"
-              onBlur={syncValues}
+              ref={form.register}
             />
             <TextArea
+              ref={form.register}
               id="logo"
               label="Logo"
               rows={2}
               hint="A url to an image."
-              onBlur={syncValues}
             />
 
             <TextArea
               id="description"
               label="Description"
               hint="You can write in markdown to format the description."
-              onChange={syncValues}
+              ref={form.register}
             />
-            {error && <p className="text-error">{error}</p>}
+            {form?.errors?.form?.message && (
+              <p className="text-error">{form?.errors?.form?.message}</p>
+            )}
             <div className="form-actions">
               <button className="btn btn-link mr-2" type="button" onClick={() => onCancel()}>
                 CANCEL
@@ -138,14 +152,14 @@ export default function TechForm({
         </div>
         <div className="column col-6 col-md-12 hide-mobile">
           <h5>Preview</h5>
-          <TechCard tech={{ ...formValues, category: chosenCategory, layer: chosenLayer }} />
-          {formValues.description && (
+          <TechCard tech={{ ...watchedValues, category: chosenCategory, layer: chosenLayer }} />
+          {form.getValues("description") && (
             <div className="card mt-2">
               <div className="card-header pt-2">
                 <div className="float-left card-subtitle text-gray">Description</div>
               </div>
               <div className="card-body pt-1">
-                <ReactMarkdown className="mt-2 mb-2">{formValues.description}</ReactMarkdown>
+                <ReactMarkdown className="mt-2 mb-2">{form.getValues("description")}</ReactMarkdown>
               </div>
             </div>
           )}

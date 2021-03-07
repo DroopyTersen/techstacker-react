@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { SubmitHandler, useForm as useHookForm } from "react-hook-form";
 
 export const getFormValues = (form) => {
   let formData = new FormData(form);
@@ -7,10 +8,41 @@ export const getFormValues = (form) => {
   return object;
 };
 
-interface UseFormParams<T> {
-  onSave: (formValues: T) => Promise<any>;
-  onSuccess: (result: any) => void;
+interface UseSaveFormParams<TFormValues = any> {
+  onSave: (formValues: TFormValues) => Promise<TFormValues>;
+  onSuccess: (result: TFormValues) => void;
+  initial: TFormValues;
 }
+
+export function useSaveForm<TFormValues = any>({
+  onSave,
+  onSuccess,
+  initial,
+}: UseSaveFormParams<TFormValues>) {
+  const [isSaving, setIsSaving] = useState(false);
+  const form = useHookForm({
+    defaultValues: initial as any,
+  });
+
+  let onValidSubmit: SubmitHandler<TFormValues> = async (data) => {
+    try {
+      setIsSaving(true);
+      let saveResult = await onSave(data as TFormValues);
+      onSuccess(saveResult);
+    } catch (err) {
+      setIsSaving(false);
+      form.setError("form", err);
+    }
+  };
+  let onSubmit = form.handleSubmit(onValidSubmit);
+
+  return {
+    ...form,
+    isSaving,
+    onSubmit,
+  };
+}
+
 export default function useForm<T = any>({ onSave, onSuccess, initial = {} }) {
   let [isSaving, setIsSaving] = React.useState(false);
   let [error, setError] = React.useState("");
