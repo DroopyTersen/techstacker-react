@@ -7,7 +7,11 @@ export const getFormValues = (form) => {
   return object;
 };
 
-export default function useForm({ onSave, onSuccess, initial = {} }) {
+interface UseFormParams<T> {
+  onSave: (formValues: T) => Promise<any>;
+  onSuccess: (result: any) => void;
+}
+export default function useForm<T = any>({ onSave, onSuccess, initial = {} }) {
   let [isSaving, setIsSaving] = React.useState(false);
   let [error, setError] = React.useState("");
   let formRef = React.useRef(null);
