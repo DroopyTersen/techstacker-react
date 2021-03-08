@@ -146,7 +146,8 @@ export default function TechForm({
               label="Description"
               hint="You can write in markdown to format the description."
               ref={form.register}
-              rows={12}
+              className="markdown"
+              rows={20}
             />
             {form?.errors?.form?.message && (
               <p className="text-error">{form?.errors?.form?.message}</p>

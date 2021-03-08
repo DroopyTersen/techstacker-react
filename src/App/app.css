@@ -44,6 +44,10 @@ a:hover img {
 textarea {
   resize: vertical;
 }
+textarea.markdown {
+  font-size: 14px;
+  line-height: 20px;
+}
 .layout {
   max-width: 1240px;
   display: grid;
@@ -63,6 +67,9 @@ textarea {
 .invisible {
   opacity: 0;
 }
+.hidden {
+  display: none;
+}
 @media (max-width: 600px) {
   .hide-mobile {
     display: none !important;
@@ -75,7 +82,7 @@ textarea {
   }
 }
 
-body ul {
+body ul:not(.tab) {
   list-style: disc outside;
   padding-left: 0.4rem;
 }

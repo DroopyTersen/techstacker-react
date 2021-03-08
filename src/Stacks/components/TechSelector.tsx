@@ -1,4 +1,5 @@
 import FilterButtons from "@components/FilterButtons";
+import { Row } from "@components/layout";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Category, Layer } from "../../App/AppDataProvider";
@@ -45,18 +46,36 @@ export default function TechSelector({
         Selected Tech
       </h5> */}
 
-      {/* <Row justifyContent="space-between" alignItems="center" margin="20px 0 10px 0"> */}
-      <label className="form-switch c-hand no-select">
-        <div className="switch-text">{showAll ? "Showing All" : "Just Selected "}</div>
-        <input type="checkbox" checked={!showAll} onClick={() => setShowAll((prev) => !prev)} />
-        <i className="form-icon"></i>
-      </label>
-      <FilterButtons
-        onChange={(val: number) => setActiveLayer(val)}
-        value={activeLayer}
-        options={layers}
-      />
-      {/* </Row> */}
+      <div className="pt-2">
+        {technologies
+          .filter((tech) => values.find((techId) => tech.id === techId))
+          .map((t) => (
+            <span key={t.id} className="chip active">
+              {t.title}
+              <button
+                type="button"
+                className="btn btn-clear"
+                aria-label="Close"
+                role="button"
+                onClick={() => toggleSelect(t.id)}
+              ></button>
+            </span>
+          ))}
+      </div>
+      <Row justifyContent="space-between" alignItems="center" margin="20px 0 10px 0">
+        <FilterButtons
+          onChange={(val: number) => setActiveLayer(val)}
+          value={activeLayer}
+          options={layers}
+        />
+        <label className="form-switch c-hand no-select">
+          <div className="switch-text" style={{ width: "100px" }}>
+            {showAll ? "Showing All" : "Just Selected "}
+          </div>
+          <input type="checkbox" checked={!showAll} onChange={() => setShowAll((prev) => !prev)} />
+          <i className="form-icon"></i>
+        </label>
+      </Row>
 
       {!itemsToShow.length && <p className="mt-2 pt-2 text-gray">Nothing to see here...</p>}
       {!!itemsToShow.length && (
@@ -65,7 +84,7 @@ export default function TechSelector({
             let categoryTech = itemsToShow.filter((tech) => tech.category.id === category.id);
             if (!categoryTech.length) return null;
             return (
-              <div style={{ padding: "20px 0" }}>
+              <div style={{ padding: "20px 0" }} key={category.id}>
                 <h3 className="h5 mt-2">{category.title}</h3>
                 <table className="mt-2 table table-hover" key={activeLayer}>
                   <tbody style={{ border: "1px solid #dadee4" }}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 export default function Tabs<T>({ value, options = [], onChange, ...rest }: Props<T>) {
   useEffect(() => {
@@ -10,7 +10,7 @@ export default function Tabs<T>({ value, options = [], onChange, ...rest }: Prop
   return (
     <ul className="tab tab-block mb-2" {...rest}>
       {options.map((option) => (
-        <li className={"tab-item " + (value === option.id ? "active" : "")}>
+        <li key={option.id + ""} className={"tab-item " + (value === option.id ? "active" : "")}>
           <a
             className="text-bold"
             href="#"

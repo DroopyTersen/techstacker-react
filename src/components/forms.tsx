@@ -19,7 +19,6 @@ const parseErrorMessage = (error: FieldError, label) => {
 };
 
 export const FormControl = ({ children, label, name, hint, error }: FormControlProps) => {
-  console.log("🚀 | FormControl | error", error);
   const errorMsg = parseErrorMessage(error, label);
 
   return (
@@ -51,10 +50,16 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 type TextAreaProps = FormControlProps & React.HTMLProps<HTMLTextAreaElement>;
 
 export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>((props, ref) => {
-  let { label, name, hint, error, ...rest } = props;
+  let { label, name, hint, error, className = "", ...rest } = props;
   return (
     <FormControl label={label} name={name} hint={hint} error={error}>
-      <textarea className="form-input" name={name} rows={6} ref={ref} {...rest}></textarea>
+      <textarea
+        className={"form-input " + className}
+        name={name}
+        rows={6}
+        ref={ref}
+        {...rest}
+      ></textarea>
     </FormControl>
   );
 });
