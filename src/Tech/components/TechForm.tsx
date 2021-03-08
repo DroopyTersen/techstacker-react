@@ -47,7 +47,7 @@ export default function TechForm({
   }, [linkPreview]);
   form.errors;
 
-  let watchedValues = form.watch();
+  let watchedValues: TechDto = form.watch();
   let chosenCategory = categories.find((c) => c.id + "" === watchedValues?.category_id);
   let chosenLayer = layers.find((l) => l.id + "" === watchedValues?.layer_id);
 
@@ -146,6 +146,7 @@ export default function TechForm({
               label="Description"
               hint="You can write in markdown to format the description."
               ref={form.register}
+              rows={12}
             />
             {form?.errors?.form?.message && (
               <p className="text-error">{form?.errors?.form?.message}</p>
@@ -161,13 +162,13 @@ export default function TechForm({
         <div className="column col-6 col-md-12 hide-mobile">
           <h5>Preview</h5>
           <TechCard tech={{ ...watchedValues, category: chosenCategory, layer: chosenLayer }} />
-          {form.getValues("description") && (
+          {watchedValues.description && (
             <div className="card mt-2">
               <div className="card-header pt-2">
                 <div className="float-left card-subtitle text-gray">Description</div>
               </div>
               <div className="card-body pt-1">
-                <ReactMarkdown className="mt-2 mb-2">{form.getValues("description")}</ReactMarkdown>
+                <ReactMarkdown className="mt-2 mb-2">{watchedValues.description}</ReactMarkdown>
               </div>
             </div>
           )}
