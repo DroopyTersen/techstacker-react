@@ -45,12 +45,12 @@ export default function TechForm({
       form.setValue("logo", linkPreview.image);
     }
   }, [linkPreview]);
+  form.errors;
 
   let watchedValues = form.watch();
   let chosenCategory = categories.find((c) => c.id + "" === watchedValues?.category_id);
   let chosenLayer = layers.find((l) => l.id + "" === watchedValues?.layer_id);
 
-  // TODO: Handle errors
   return (
     <form onSubmit={form.onSubmit}>
       <div
@@ -65,24 +65,29 @@ export default function TechForm({
       <div className="columns">
         <div className="column col-6 col-md-12">
           <fieldset disabled={form.isSaving}>
-            <input type="hidden" name="id"></input>
-            <Input id="title" label="Title" ref={form.register({ required: true })} required />
+            <input type="hidden" name="id" ref={form.register}></input>
+            <Input
+              name="title"
+              label="Title"
+              ref={form.register({ required: true, minLength: 3 })}
+              error={form.errors.title}
+            />
             <TextArea
-              id="link"
+              name="link"
               label="Link"
               rows={2}
               hint="Link to the official documentation."
               ref={form.register({ required: true })}
-              required
+              error={form.errors.link}
               onBlur={(e: any) => setLink(e.target.value)}
             />
             <div className="columns">
               <div className="column col-6 col-sm-12">
                 <Select
-                  id="layer_id"
+                  name="layer_id"
                   label="Tech Layer"
                   ref={form.register({ required: true })}
-                  required
+                  error={form.errors["layer_id"]}
                   hint="Where in the tech stack does it live?"
                 >
                   <option value="">Choose...</option>
@@ -95,10 +100,10 @@ export default function TechForm({
               </div>
               <div className="column col-6 col-sm-12">
                 <Select
-                  id="category_id"
+                  name="category_id"
                   label="Category"
+                  error={form.errors["category_id"]}
                   ref={form.register({ required: true })}
-                  required
                   hint="How would you categorize it?"
                 >
                   <option value="">Choose...</option>
@@ -119,22 +124,25 @@ export default function TechForm({
               }}
             />
             <TextArea
-              id="tagline"
+              name="tagline"
               label="Tagline"
               rows={2}
               hint="How does it describe itself?"
-              ref={form.register}
+              ref={form.register({
+                maxLength: { value: 80, message: "Tagline should be less than 80 characters" },
+              })}
+              error={form.errors["tagline"]}
             />
             <TextArea
               ref={form.register}
-              id="logo"
+              name="logo"
               label="Logo"
               rows={2}
               hint="A url to an image."
             />
 
             <TextArea
-              id="description"
+              name="description"
               label="Description"
               hint="You can write in markdown to format the description."
               ref={form.register}

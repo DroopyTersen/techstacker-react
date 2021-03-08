@@ -34,7 +34,7 @@ export function TagsInput({ onChange, defaultValue = [], ...rest }: TagsInputPro
   return (
     <>
       <TextArea
-        id="tags"
+        name="tags"
         label="Tags"
         value={value}
         onChange={(e) => setValue(e.currentTarget.value)}

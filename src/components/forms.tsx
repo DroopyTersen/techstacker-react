@@ -1,29 +1,37 @@
 import React from "react";
+import { FieldError } from "react-hook-form";
 import "./forms.css";
 
 interface FormControlProps {
   label: string;
-  id: string;
+  name: string;
   hint?: string;
-  error?: Error | string;
+  error?: FieldError;
   children?: React.ReactNode;
 }
-const parseErrorMessage = (error: string | Error) => {
-  if (typeof error === "string") return error;
-  return error?.message ?? "";
+
+const parseErrorMessage = (error: FieldError, label) => {
+  if (!error) return "";
+  if (error.message) return error.message;
+
+  if (error.type === "required") return `${label || "Field"} is required`;
+  return `${label || "Field"} error: ${error.type}`;
 };
-export const FormControl = ({ children, label, id, hint, error }: FormControlProps) => {
-  const errorMsg = parseErrorMessage(error);
+
+export const FormControl = ({ children, label, name, hint, error }: FormControlProps) => {
+  console.log("🚀 | FormControl | error", error);
+  const errorMsg = parseErrorMessage(error, label);
+
   return (
     <div className={"form-group " + (errorMsg ? "has-error" : "")}>
       {label && (
-        <label className="form-label" htmlFor={id}>
+        <label className="form-label" htmlFor={name}>
           {label}
         </label>
       )}
       {children}
-      {errorMsg && <p className="form-input-hint text-error">{errorMsg}</p>}
-      {hint && <p className="form-input-hint text-muted">{hint}</p>}
+      {errorMsg && <p className="text-error">{errorMsg}</p>}
+      {hint && <p className="form-input-hint text-gray">{hint}</p>}
     </div>
   );
 };
@@ -31,10 +39,10 @@ export const FormControl = ({ children, label, id, hint, error }: FormControlPro
 type InputProps = FormControlProps & React.HTMLProps<HTMLInputElement>;
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ label, id, hint, error, ...rest }, ref) => {
+  ({ label, name, hint, error, ...rest }, ref) => {
     return (
-      <FormControl label={label} id={id} hint={hint} error={error}>
-        <input className="form-input" name={id} id={id} ref={ref} {...rest} />
+      <FormControl label={label} name={name} hint={hint} error={error}>
+        <input className="form-input" name={name} ref={ref} {...rest} />
       </FormControl>
     );
   }
@@ -43,20 +51,20 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 type TextAreaProps = FormControlProps & React.HTMLProps<HTMLTextAreaElement>;
 
 export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>((props, ref) => {
-  let { label, id, hint, error, ...rest } = props;
+  let { label, name, hint, error, ...rest } = props;
   return (
-    <FormControl label={label} id={id} hint={hint} error={error}>
-      <textarea className="form-input" name={id} id={id} rows={6} ref={ref} {...rest}></textarea>
+    <FormControl label={label} name={name} hint={hint} error={error}>
+      <textarea className="form-input" name={name} rows={6} ref={ref} {...rest}></textarea>
     </FormControl>
   );
 });
 
 type SelectProps = FormControlProps & React.HTMLProps<HTMLSelectElement>;
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, id, children, hint, error, ...rest }, ref) => {
+  ({ label, name, children, hint, error, ...rest }, ref) => {
     return (
-      <FormControl label={label} id={id} hint={hint} error={error}>
-        <select ref={ref} id={id} name={id} className="form-select" {...rest}>
+      <FormControl label={label} name={name} hint={hint} error={error}>
+        <select ref={ref} name={name} className="form-select" {...rest}>
           {children}
         </select>
       </FormControl>

@@ -36,6 +36,14 @@ export function useSaveForm<TFormValues = any>({
   };
   let onSubmit = form.handleSubmit(onValidSubmit);
 
+  const getField = (name: string) => {
+    return {
+      name,
+      errors: form.errors[name],
+      defaultValue: initial[name],
+    };
+  };
+
   return {
     ...form,
     isSaving,

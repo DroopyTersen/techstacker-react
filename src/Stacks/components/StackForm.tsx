@@ -69,13 +69,13 @@ export default function StackForm({
           <Input
             label="Title"
             hint="What kind of app was it?"
-            id="title"
+            name="title"
             value={title}
             onChange={(e) => setTitle(e.currentTarget.value)}
             required
           />
           <TextArea
-            id="tagline"
+            name="tagline"
             label="Tagline"
             rows={2}
             hint="Describe the stack in less than one sentance."
@@ -84,7 +84,7 @@ export default function StackForm({
           />
 
           <TextArea
-            id="image"
+            name="image"
             label="Image"
             rows={2}
             hint="A url to an image."
@@ -92,7 +92,7 @@ export default function StackForm({
             onChange={(e) => setImage(e.currentTarget.value)}
           />
           <TextArea
-            id="description"
+            name="description"
             hint="Describe the tech stack. You can use Markdown."
             label="Description"
             value={description}
